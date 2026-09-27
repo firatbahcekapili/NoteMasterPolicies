@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Policy - NoteMaster</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+      color: #1f2937;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 32px 20px;
+      background-color: #f9fafb;
+    }
+    .card {
+      background: #ffffff;
+      padding: 36px;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+    .lang-switcher {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    .lang-btn {
+      padding: 6px 14px;
+      border: 1px solid #d1d5db;
+      background: #ffffff;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 13px;
+      color: #4b5563;
+      transition: all 0.2s;
+    }
+    .lang-btn.active {
+      background: #4f46e5;
+      color: #ffffff;
+      border-color: #4f46e5;
+    }
+    h1 { color: #111827; margin-bottom: 8px; font-size: 26px; }
+    h2 { color: #374151; margin-top: 24px; border-bottom: 1px solid #e5e7eb; padding-bottom: 6px; font-size: 18px; }
+    p, li { color: #4b5563; font-size: 15px; }
+    .updated { color: #6b7280; font-size: 14px; margin-bottom: 24px; }
+    a { color: #4f46e5; text-decoration: none; }
+    .lang-content { display: none; }
+    .lang-content.active { display: block; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="lang-switcher">
+      <button class="lang-btn active" onclick="switchLang('en')">English 🇬🇧</button>
+      <button class="lang-btn" onclick="switchLang('tr')">Türkçe 🇹🇷</button>
+    </div>
+
+    <!-- English Version -->
+    <div id="content-en" class="lang-content active">
+      <h1>NoteMaster Privacy Policy</h1>
+      <p class="updated">Last Updated: September 27, 2026</p>
+
+      <p>NoteMaster ("we", "our app") respects user privacy and is committed to protecting your personal data. This Privacy Policy describes how information is collected, used, and protected when you use our application.</p>
+
+      <h2>1. Information We Collect</h2>
+      <ul>
+        <li><strong>Account Information:</strong> Your email address, optional full name, and authentication tokens. When logging in via Apple or Google, only necessary identity profile info is securely handled.</li>
+        <li><strong>User Content:</strong> Your notes, tasks, calendar events, tags, and drawings. In Guest mode, all data remains strictly on your local device. When signed in, data is synchronized and encrypted through our secure cloud backend.</li>
+        <li><strong>Microphone & Audio Data:</strong> Audio recordings and speech-to-text functionality are activated solely when you initiate recording. Audio is processed strictly to create your notes and transcription and is never sold or used for ad targeting.</li>
+      </ul>
+
+      <h2>2. Permissions & Purposes</h2>
+      <ul>
+        <li><strong>Microphone (NSMicrophoneUsageDescription):</strong> Required to record audio notes and enable voice transcription.</li>
+        <li><strong>Speech Recognition (NSSpeechRecognitionUsageDescription):</strong> Required to convert your spoken words into text notes and tasks.</li>
+        <li><strong>Notifications:</strong> To deliver scheduled task, note, and calendar event reminders.</li>
+      </ul>
+
+      <h2>3. Data Security & Storage</h2>
+      <p>All data communications are encrypted in transit using industry-standard TLS/SSL protocols and protected with AES-grade encryption at rest. We never sell or rent your personal data to third parties.</p>
+
+      <h2>4. Account and Data Deletion (App Store Review Guideline 5.1.1v)</h2>
+      <p>Users can permanently delete their account and all associated data at any time directly within the app by going to <strong>Settings > Profile > Delete Account</strong>. You may also request deletion by contacting us at <a href="mailto:fcodetr@gmail.com">fcodetr@gmail.com</a>.</p>
+
+      <h2>5. Contact Us</h2>
+      <p>If you have any questions about this Privacy Policy, please contact us at: <a href="mailto:fcodetr@gmail.com">fcodetr@gmail.com</a></p>
+    </div>
+
+    <!-- Turkish Version -->
+    <div id="content-tr" class="lang-content">
+      <h1>NoteMaster Gizlilik Politikası</h1>
+      <p class="updated">Son Güncelleme: 27 Eylül 2026</p>
+
+      <p>NoteMaster ("biz", "uygulamamız"), kullanıcılarımızın gizliliğine saygı duyar ve kişisel verilerin korunmasını taahhüt eder. Bu Gizlilik Politikası, uygulamamızı kullandığınızda toplanan, işlenen ve korunan bilgileri açıklar.</p>
+
+      <h2>1. Toplanan Bilgiler</h2>
+      <ul>
+        <li><strong>Hesap Bilgileri:</strong> E-posta adresiniz, adınız soyadınız (isteğe bağlı) ve kimlik doğrulama belirteçleri. Apple veya Google ile giriş yapıldığında yalnızca kimlik doğrulama için gerekli temel profil bilgileri alınır.</li>
+        <li><strong>Uygulama İçeriği:</strong> Oluşturduğunuz notlar, görevler, takvim etkinlikleri ve çizimler. Misafir modunda veriler yalnızca yerel cihazınızda saklanır. Giriş yapıldığında veriler bulut veritabanında şifrelenerek senkronize edilir.</li>
+        <li><strong>Mikrofon ve Ses Verisi:</strong> Sesli not alma ve konuşmayı metne dökme özelliği yalnızca siz mikrofon düğmesine bastığınızda geçici olarak kullanılır. Ses kayıtları üçüncü taraflara reklam amacıyla satılmaz.</li>
+      </ul>
+
+      <h2>2. İzinler ve Kullanım Amaçları</h2>
+      <ul>
+        <li><strong>Mikrofon (NSMicrophoneUsageDescription):</strong> Sesli not kaydı ve transkripsiyon için.</li>
+        <li><strong>Ses Tanıma (NSSpeechRecognitionUsageDescription):</strong> Konuşulan içeriği metne ve görevlere dönüştürmek için.</li>
+        <li><strong>Bildirimler:</strong> Belirlediğiniz görev ve etkinlik hatırlatıcılarını zamanında iletmek için.</li>
+      </ul>
+
+      <h2>3. Veri Güvenliği ve Saklama</h2>
+      <p>Verileriniz endüstri standardı güvenlik protokolleri (SSL/TLS ve AES şifreleme) ile korunur. Verileriniz asla üçüncü taraf reklam ağlarıyla paylaşılmaz.</p>
+
+      <h2>4. Hesap ve Veri Silme Talebi (Account Deletion)</h2>
+      <p>Kullanıcılarımız diledikleri zaman uygulama içindeki <strong>Ayarlar > Profil > Hesabımı Sil</strong> adımlarını takip ederek tüm verileriyle birlikte hesaplarını kalıcı olarak silebilirler. Alternatif olarak <a href="mailto:fcodetr@gmail.com">fcodetr@gmail.com</a> adresine e-posta göndererek silme talebinde bulunabilirsiniz.</p>
+
+      <h2>5. İletişim</h2>
+      <p>Gizlilik politikamızla ilgili soru ve önerileriniz için: <a href="mailto:fcodetr@gmail.com">fcodetr@gmail.com</a></p>
+    </div>
+  </div>
+
+  <script>
+    function switchLang(lang) {
+      document.querySelectorAll('.lang-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.lang-btn').forEach(el => el.classList.remove('active'));
+      document.getElementById('content-' + lang).classList.add('active');
+      event.target.classList.add('active');
+    }
+  </script>
+</body>
+</html>
