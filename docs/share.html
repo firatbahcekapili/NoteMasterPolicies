@@ -10,43 +10,56 @@
   <style>
     :root {
       --bg: #0A0D14;
-      --card-bg: rgba(19, 24, 38, 0.85);
+      --card-bg: rgba(19, 24, 38, 0.9);
       --card-border: rgba(255, 255, 255, 0.08);
       --text: #F8FAFC;
       --text-muted: #94A3B8;
       --accent: #6366F1;
+      --primary: #6366F1;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
       background: var(--bg);
       color: var(--text);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 20px 16px 48px;
+      padding: 24px 16px 48px;
     }
     .container { width: 100%; max-width: 620px; }
+    .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+    .brand { font-size: 19px; font-weight: 800; color: #FFF; text-decoration: none; display: flex; align-items: center; gap: 10px; }
+    .badge { font-size: 11px; font-weight: 700; color: #A5B4FC; background: rgba(99,102,241,0.15); border: 1px solid rgba(99,102,241,0.3); padding: 4px 10px; border-radius: 20px; }
     .note-card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: 24px;
       padding: 26px;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
       position: relative;
       overflow: hidden;
-      box-shadow: 0 14px 36px rgba(0,0,0,0.45);
+      box-shadow: 0 16px 36px rgba(0,0,0,0.5);
     }
-    .color-stripe { position: absolute; top:0; left:0; right:0; height:4px; background: var(--accent); }
-    .btn { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 14px; border-radius: 16px; font-weight: 700; text-decoration: none; cursor: pointer; border: none; }
-    .btn-primary { background: #6366F1; color: #FFF; margin-bottom: 10px; }
-    .btn-store { background: #111827; color: #FFF; border: 1px solid rgba(255,255,255,0.15); margin-top: 8px; }
+    .color-stripe { position: absolute; top: 0; left: 0; right: 0; height: 4px; background: var(--accent); }
+    .note-title { font-size: 22px; font-weight: 800; margin-bottom: 14px; color: #FFF; }
+    .note-body { font-size: 15px; color: #E2E8F0; white-space: pre-wrap; line-height: 1.7; word-break: break-word; }
+    .actions { display: flex; flex-direction: column; gap: 10px; }
+    .btn { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 14px; border-radius: 16px; font-weight: 700; font-size: 15px; text-decoration: none; cursor: pointer; border: none; transition: transform 0.15s ease; }
+    .btn:active { transform: scale(0.98); }
+    .btn-primary { background: linear-gradient(135deg, #6366F1, #4F46E5); color: #FFF; box-shadow: 0 4px 16px rgba(99,102,241,0.35); }
+    .btn-secondary { background: rgba(255,255,255,0.06); color: #FFF; border: 1px solid rgba(255,255,255,0.1); }
+    .store-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 4px; }
+    @media (max-width: 480px) { .store-grid { grid-template-columns: 1fr; } }
+    .btn-store { padding: 12px; border-radius: 14px; background: #000; color: #FFF; border: 1px solid rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; font-size: 14px; font-weight: 700; }
+    .btn-google { background: #0F172A; }
+    .loader { text-align: center; padding: 48px 0; color: var(--text-muted); font-weight: 600; }
   </style>
 </head>
 <body>
   <div class="container" id="app">
-    <div style="text-align: center; padding: 40px;" id="loading">Not yükleniyor...</div>
+    <div class="loader">Not yükleniyor...</div>
   </div>
 
   <script>
@@ -57,25 +70,63 @@
       .then(res => res.json())
       .then(res => {
         if (!res.success || !res.item) {
-          document.getElementById('app').innerHTML = `<div class="note-card"><h2>Not Bulunamadı</h2><p>Bu bağlantı süresi dolmuş veya geçersiz.</p></div>`;
+          document.getElementById('app').innerHTML = `
+            <div class="note-card">
+              <h2 style="color:#EF4444; margin-bottom:8px;">Bağlantı Geçersiz</h2>
+              <p style="color:#94A3B8;">Bu paylaşım bağlantısının süresi dolmuş veya yayından kaldırılmış.</p>
+            </div>
+            <a href="${res.appStoreUrl || 'https://apps.apple.com'}" class="btn btn-secondary">App Store</a>
+          `;
           return;
         }
+
         const isIos = /iPhone|iPad|iPod/i.test(navigator.userAgent);
-        const storeUrl = isIos ? res.appStoreUrl : res.playStoreUrl;
-        const storeName = isIos ? 'App Store' : 'Google Play';
+        const isAndroid = /Android/i.test(navigator.userAgent);
+        const isDesktop = !isIos && !isAndroid;
+
+        const deepLink = res.deepLinkUrl || `notemaster://s/${token}`;
+        const item = res.item;
+
+        let storeHtml = '';
+        if (isIos) {
+          storeHtml = `<a href="${res.appStoreUrl}" target="_blank" class="btn-store">App Store'dan İndir</a>`;
+        } else if (isAndroid) {
+          storeHtml = `<a href="${res.playStoreUrl}" target="_blank" class="btn-store btn-google">Google Play'den İndir</a>`;
+        } else {
+          storeHtml = `
+            <div class="store-grid">
+              <a href="${res.appStoreUrl}" target="_blank" class="btn-store">App Store (iOS)</a>
+              <a href="${res.playStoreUrl}" target="_blank" class="btn-store btn-google">Google Play (Android)</a>
+            </div>
+          `;
+        }
 
         document.getElementById('app').innerHTML = `
-          <div class="note-card">
-            <div class="color-stripe" style="background:${res.item.color || '#6366F1'}"></div>
-            <h1 style="margin-bottom:12px;">${res.item.title || 'Başlıksız'}</h1>
-            <p style="white-space: pre-wrap; line-height:1.7;">${res.item.content || ''}</p>
+          <div class="header">
+            <a href="#" class="brand">NoteMaster</a>
+            <span class="badge">Paylaşılan Not</span>
           </div>
-          <a href="${res.deepLinkUrl || 'notemaster://s/' + token}" class="btn btn-primary">NoteMaster Uygulamasında Aç</a>
-          <a href="${storeUrl}" target="_blank" class="btn btn-store">${storeName}'den NoteMaster'ı İndir</a>
+
+          <div class="note-card">
+            <div class="color-stripe" style="background:${item.color || '#6366F1'}"></div>
+            <h1 class="note-title">${item.title || 'Başlıksız Not'}</h1>
+            <div class="note-body">${item.content || ''}</div>
+          </div>
+
+          <div class="actions">
+            <a href="${deepLink}" class="btn btn-primary">NoteMaster Uygulamasında Aç</a>
+            <button class="btn btn-secondary" onclick="navigator.clipboard.writeText('${(item.title + '\\n\\n' + item.content).replace(/'/g, "\\'")}').then(() => alert('Not kopyalandı!'))">Not Metnini Kopyala</button>
+            ${storeHtml}
+          </div>
         `;
       })
       .catch(() => {
-        document.getElementById('app').innerHTML = `<div class="note-card"><h2>Hata</h2><p>Not yüklenirken bir problem oluştu.</p></div>`;
+        document.getElementById('app').innerHTML = `
+          <div class="note-card">
+            <h2 style="color:#EF4444; margin-bottom:8px;">Hata Oluştu</h2>
+            <p style="color:#94A3B8;">Not içeriği alınırken bağlantı hatası meydana geldi.</p>
+          </div>
+        `;
       });
   </script>
 </body>
