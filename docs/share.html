@@ -110,11 +110,9 @@
         const deepLink = `notemaster://s/${token}`;
         const item = res.item;
 
-        // 1. Doğrudan standart şema ile uygulamayı tetikle
+        // Mobilde otomatik uygulamayı aç
         if (isIos || isAndroid) {
           window.location.href = deepLink;
-          
-          // Yedek iframe tetikleyicisi
           const iframe = document.createElement("iframe");
           iframe.style.display = "none";
           iframe.src = deepLink;
@@ -141,7 +139,7 @@
             <div class="color-stripe" style="background:${item.color || '#6366F1'}"></div>
             <div class="icon-wrap">🔒</div>
             <h1 class="note-title">${item.title || 'Paylaşılan Not'}</h1>
-            <p class="notice">Bu notun içeriğini görüntülemek ve düzenlemek için NoteMaster uygulamasını açın.</p>
+            <p class="notice">Bu notun içeriğini görüntülemek için NoteMaster uygulamasını açın.</p>
             
             <div class="actions">
               <a href="${deepLink}" class="btn btn-primary" id="openAppBtn">NoteMaster Uygulamasında Aç</a>
@@ -151,8 +149,7 @@
           <div class="footer">NoteMaster • Güvenli ve Akıllı Not Defteri</div>
         `;
 
-        // Kullanıcı butona dokunduğunda doğrudan OS Intent'i devreye girer (Asla Play Store'a zorlamaz)
-        document.getElementById('openAppBtn').addEventListener('click', (e) => {
+        document.getElementById('openAppBtn').addEventListener('click', () => {
           window.location.href = deepLink;
         });
       })
