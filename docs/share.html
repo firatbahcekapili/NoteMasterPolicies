@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Paylaşılan Not • NoteMaster</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0A0D14;
+      --card-bg: rgba(19, 24, 38, 0.85);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text: #F8FAFC;
+      --text-muted: #94A3B8;
+      --accent: #6366F1;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px 16px 48px;
+    }
+    .container { width: 100%; max-width: 620px; }
+    .note-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 26px;
+      margin-bottom: 20px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 14px 36px rgba(0,0,0,0.45);
+    }
+    .color-stripe { position: absolute; top:0; left:0; right:0; height:4px; background: var(--accent); }
+    .btn { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 14px; border-radius: 16px; font-weight: 700; text-decoration: none; cursor: pointer; border: none; }
+    .btn-primary { background: #6366F1; color: #FFF; margin-bottom: 10px; }
+    .btn-store { background: #111827; color: #FFF; border: 1px solid rgba(255,255,255,0.15); margin-top: 8px; }
+  </style>
+</head>
+<body>
+  <div class="container" id="app">
+    <div style="text-align: center; padding: 40px;" id="loading">Not yükleniyor...</div>
+  </div>
+
+  <script>
+    const token = new URLSearchParams(window.location.search).get('t');
+    const endpoint = `https://mwqlisyiczrqhuiacdfj.supabase.co/functions/v1/share?t=${token}&format=json`;
+
+    fetch(endpoint)
+      .then(res => res.json())
+      .then(res => {
+        if (!res.success || !res.item) {
+          document.getElementById('app').innerHTML = `<div class="note-card"><h2>Not Bulunamadı</h2><p>Bu bağlantı süresi dolmuş veya geçersiz.</p></div>`;
+          return;
+        }
+        const isIos = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+        const storeUrl = isIos ? res.appStoreUrl : res.playStoreUrl;
+        const storeName = isIos ? 'App Store' : 'Google Play';
+
+        document.getElementById('app').innerHTML = `
+          <div class="note-card">
+            <div class="color-stripe" style="background:${res.item.color || '#6366F1'}"></div>
+            <h1 style="margin-bottom:12px;">${res.item.title || 'Başlıksız'}</h1>
+            <p style="white-space: pre-wrap; line-height:1.7;">${res.item.content || ''}</p>
+          </div>
+          <a href="${res.deepLinkUrl || 'notemaster://s/' + token}" class="btn btn-primary">NoteMaster Uygulamasında Aç</a>
+          <a href="${storeUrl}" target="_blank" class="btn btn-store">${storeName}'den NoteMaster'ı İndir</a>
+        `;
+      })
+      .catch(() => {
+        document.getElementById('app').innerHTML = `<div class="note-card"><h2>Hata</h2><p>Not yüklenirken bir problem oluştu.</p></div>`;
+      });
+  </script>
+</body>
+</html>
