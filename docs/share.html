@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>NoteMaster'a Yönlendiriliyorsunuz...</title>
+  <title>Paylaşılan Not • NoteMaster</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
@@ -27,6 +27,7 @@
       align-items: center;
       justify-content: center;
       padding: 24px 16px;
+      line-height: 1.6;
     }
     .container { width: 100%; max-width: 420px; }
     .card {
@@ -40,18 +41,20 @@
       overflow: hidden;
     }
     .color-stripe { position: absolute; top: 0; left: 0; right: 0; height: 5px; background: #6366F1; }
-    .spinner {
-      width: 48px;
-      height: 48px;
-      border: 4px solid rgba(99, 102, 241, 0.2);
-      border-top-color: #6366F1;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-      margin: 0 auto 20px;
+    .icon-wrap {
+      width: 64px;
+      height: 64px;
+      border-radius: 20px;
+      background: rgba(99, 102, 241, 0.15);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px;
+      font-size: 28px;
     }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    h1 { font-size: 20px; font-weight: 800; margin-bottom: 8px; color: #FFF; }
-    p { font-size: 14px; color: var(--text-muted); margin-bottom: 24px; line-height: 1.5; }
+    .note-title { font-size: 20px; font-weight: 800; margin-bottom: 8px; color: #FFF; word-break: break-word; }
+    .notice { font-size: 13.5px; color: var(--text-muted); margin-bottom: 24px; line-height: 1.5; }
     .actions { display: flex; flex-direction: column; gap: 10px; width: 100%; }
     .btn {
       display: flex;
@@ -59,27 +62,28 @@
       justify-content: center;
       gap: 10px;
       width: 100%;
-      padding: 14px;
+      padding: 15px 18px;
       border-radius: 16px;
       font-weight: 700;
       font-size: 15px;
       text-decoration: none;
       cursor: pointer;
       border: none;
+      transition: transform 0.15s ease;
     }
-    .btn-primary { background: linear-gradient(135deg, #6366F1, #4F46E5); color: #FFF; }
-    .btn-secondary { background: rgba(255,255,255,0.06); color: #FFF; border: 1px solid rgba(255,255,255,0.12); }
+    .btn:active { transform: scale(0.98); }
+    .btn-primary { background: linear-gradient(135deg, #6366F1, #4F46E5); color: #FFF; box-shadow: 0 4px 18px rgba(99, 102, 241, 0.4); }
+    .btn-store { background: #0F172A; color: #FFF; border: 1px solid rgba(255, 255, 255, 0.12); font-size: 14px; }
+    .btn-apple { background: #000; }
+    .store-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    @media (max-width: 400px) { .store-grid { grid-template-columns: 1fr; } }
+    .footer { margin-top: 20px; font-size: 12px; color: #64748B; text-align: center; }
+    .loader { text-align: center; padding: 40px; color: var(--text-muted); font-weight: 600; }
   </style>
 </head>
 <body>
   <div class="container" id="app">
-    <div class="card">
-      <div class="color-stripe"></div>
-      <div class="spinner"></div>
-      <h1>NoteMaster Açılıyor</h1>
-      <p id="statusText">Uygulama başlatılıyor, lütfen bekleyin...</p>
-      <div class="actions" id="actionBtns" style="display: none;"></div>
-    </div>
+    <div class="loader">Yükleniyor...</div>
   </div>
 
   <script>
@@ -92,8 +96,9 @@
         if (!res.success || !res.item) {
           document.getElementById('app').innerHTML = `
             <div class="card">
+              <div class="icon-wrap" style="background:rgba(239,68,68,0.15); border-color:rgba(239,68,68,0.3);">⚠️</div>
               <h2 style="color:#EF4444; margin-bottom:8px; font-size:18px;">Bağlantı Geçersiz</h2>
-              <p>Bu paylaşım bağlantısının geçerlilik süresi dolmuş veya kaldırılmış.</p>
+              <p class="notice">Bu paylaşım bağlantısının geçerlilik süresi dolmuş veya kaldırılmış.</p>
               <a href="${res.playStoreUrl || '#'}" class="btn btn-primary">Uygulamayı İndir</a>
             </div>
           `;
@@ -102,61 +107,63 @@
 
         const isIos = /iPhone|iPad|iPod/i.test(navigator.userAgent);
         const isAndroid = /Android/i.test(navigator.userAgent);
-        const playStoreUrl = res.playStoreUrl;
-        const appStoreUrl = res.appStoreUrl;
         const deepLink = `notemaster://s/${token}`;
+        const item = res.item;
 
-        const statusEl = document.getElementById('statusText');
-        const actionsEl = document.getElementById('actionBtns');
-
-        if (isAndroid) {
-          // Android Chrome Resmi Intent Protokolü:
-          // Uygulama varsa doğrudan açar, yoksa arka planda sessizce Play Store'a yönlendirir.
-          const androidIntent = `intent://s/${token}#Intent;scheme=notemaster;package=com.notemaster.app;S.browser_fallback_url=${encodeURIComponent(playStoreUrl)};end;`;
-          window.location.href = androidIntent;
-
-          setTimeout(() => {
-            statusEl.textContent = "Uygulama açılmadıysa mağazadan indirebilirsiniz:";
-            actionsEl.style.display = "flex";
-            actionsEl.innerHTML = `
-              <a href="${androidIntent}" class="btn btn-primary">Tekrar Dene</a>
-              <a href="${playStoreUrl}" class="btn btn-secondary">Google Play'den İndir</a>
-            `;
-          }, 2000);
-
-        } else if (isIos) {
-          // iOS Safari Yönlendirme & Fallback
-          const startTime = Date.now();
+        // 1. Doğrudan standart şema ile uygulamayı tetikle
+        if (isIos || isAndroid) {
           window.location.href = deepLink;
+          
+          // Yedek iframe tetikleyicisi
+          const iframe = document.createElement("iframe");
+          iframe.style.display = "none";
+          iframe.src = deepLink;
+          document.body.appendChild(iframe);
+          setTimeout(() => { if (iframe.parentNode) iframe.parentNode.removeChild(iframe); }, 1000);
+        }
 
-          setTimeout(() => {
-            // Eğer kullanıcı NoteMaster'a geçiş yapmadıysa tarayıcıda kalmıştır -> App Store'a yönlendir
-            if (!document.hidden && Date.now() - startTime < 3000) {
-              window.location.href = appStoreUrl;
-            }
-          }, 1800);
-
-          setTimeout(() => {
-            statusEl.textContent = "Yönlendirme tamamlanmadıysa:";
-            actionsEl.style.display = "flex";
-            actionsEl.innerHTML = `
-              <a href="${deepLink}" class="btn btn-primary">Uygulamada Aç</a>
-              <a href="${appStoreUrl}" class="btn btn-secondary">App Store'dan İndir</a>
-            `;
-          }, 2500);
-
+        let storeHtml = '';
+        if (isIos) {
+          storeHtml = `<a href="${res.appStoreUrl}" target="_blank" rel="noopener" class="btn btn-store btn-apple">App Store'dan İndir</a>`;
+        } else if (isAndroid) {
+          storeHtml = `<a href="${res.playStoreUrl}" target="_blank" rel="noopener" class="btn btn-store">Google Play'den İndir</a>`;
         } else {
-          // Masaüstü Kullanıcıları
-          statusEl.textContent = "Bu notu görüntülemek için NoteMaster mobil uygulamasını yükleyin:";
-          actionsEl.style.display = "flex";
-          actionsEl.innerHTML = `
-            <a href="${appStoreUrl}" target="_blank" class="btn btn-primary">App Store (iOS)</a>
-            <a href="${playStoreUrl}" target="_blank" class="btn btn-secondary">Google Play (Android)</a>
+          storeHtml = `
+            <div class="store-grid">
+              <a href="${res.appStoreUrl}" target="_blank" rel="noopener" class="btn btn-store btn-apple">App Store</a>
+              <a href="${res.playStoreUrl}" target="_blank" rel="noopener" class="btn btn-store">Google Play</a>
+            </div>
           `;
         }
+
+        document.getElementById('app').innerHTML = `
+          <div class="card">
+            <div class="color-stripe" style="background:${item.color || '#6366F1'}"></div>
+            <div class="icon-wrap">🔒</div>
+            <h1 class="note-title">${item.title || 'Paylaşılan Not'}</h1>
+            <p class="notice">Bu notun içeriğini görüntülemek ve düzenlemek için NoteMaster uygulamasını açın.</p>
+            
+            <div class="actions">
+              <a href="${deepLink}" class="btn btn-primary" id="openAppBtn">NoteMaster Uygulamasında Aç</a>
+              ${storeHtml}
+            </div>
+          </div>
+          <div class="footer">NoteMaster • Güvenli ve Akıllı Not Defteri</div>
+        `;
+
+        // Kullanıcı butona dokunduğunda doğrudan OS Intent'i devreye girer (Asla Play Store'a zorlamaz)
+        document.getElementById('openAppBtn').addEventListener('click', (e) => {
+          window.location.href = deepLink;
+        });
       })
       .catch(() => {
-        document.getElementById('statusText').textContent = "Sunucuya bağlanırken bir hata oluştu.";
+        document.getElementById('app').innerHTML = `
+          <div class="card">
+            <div class="icon-wrap" style="background:rgba(239,68,68,0.15);">⚠️</div>
+            <h2 style="color:#EF4444; font-size:18px;">Bağlantı Hatası</h2>
+            <p class="notice">İçeriğe ulaşılamadı. Lütfen internet bağlantınızı kontrol edin.</p>
+          </div>
+        `;
       });
   </script>
 </body>
