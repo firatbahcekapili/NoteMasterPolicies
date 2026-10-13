@@ -1,133 +1,171 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Privacy Policy - NoteMaster</title>
   <style>
+    :root { --bg: #FFFFFF; --text: #0F172A; --muted: #475569; --line: #E2E8F0; --accent: #0F172A; }
+    @media (prefers-color-scheme: dark) {
+      :root { --bg: #0B0D12; --text: #F1F5F9; --muted: #94A3B8; --line: #1E293B; --accent: #F1F5F9; }
+    }
+    * { box-sizing: border-box; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      line-height: 1.6;
-      color: #1f2937;
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 32px 20px;
-      background-color: #f9fafb;
+      margin: 0; background: var(--bg); color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      line-height: 1.65; font-size: 16px;
     }
-    .card {
-      background: #ffffff;
-      padding: 36px;
-      border-radius: 12px;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    }
-    .lang-switcher {
-      display: flex;
-      justify-content: flex-end;
-      gap: 8px;
-      margin-bottom: 20px;
-    }
-    .lang-btn {
-      padding: 6px 14px;
-      border: 1px solid #d1d5db;
-      background: #ffffff;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: 600;
-      font-size: 13px;
-      color: #4b5563;
-      transition: all 0.2s;
-    }
-    .lang-btn.active {
-      background: #4f46e5;
-      color: #ffffff;
-      border-color: #4f46e5;
-    }
-    h1 { color: #111827; margin-bottom: 8px; font-size: 26px; }
-    h2 { color: #374151; margin-top: 24px; border-bottom: 1px solid #e5e7eb; padding-bottom: 6px; font-size: 18px; }
-    p, li { color: #4b5563; font-size: 15px; }
-    .updated { color: #6b7280; font-size: 14px; margin-bottom: 24px; }
-    a { color: #4f46e5; text-decoration: none; }
-    .lang-content { display: none; }
-    .lang-content.active { display: block; }
+    main { max-width: 760px; margin: 0 auto; padding: 40px 16px 64px; }
+    h1 { font-size: 30px; letter-spacing: -0.02em; margin: 0 0 4px; }
+    h2 { font-size: 20px; margin: 36px 0 8px; letter-spacing: -0.01em; }
+    h3 { font-size: 16px; margin: 20px 0 6px; }
+    p, li { color: var(--text); }
+    .muted { color: var(--muted); font-size: 14px; }
+    nav { display: flex; gap: 12px; margin: 16px 0 28px; }
+    nav a { color: var(--accent); font-weight: 600; }
+    table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 14px; }
+    th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { color: var(--muted); font-weight: 600; }
+    hr { border: 0; border-top: 1px solid var(--line); margin: 48px 0; }
+    a { color: var(--accent); }
+    .table-wrap { overflow-x: auto; }
   </style>
 </head>
 <body>
-  <div class="card">
-    <div class="lang-switcher">
-      <button class="lang-btn active" onclick="switchLang('en')">English 🇬🇧</button>
-      <button class="lang-btn" onclick="switchLang('tr')">Türkçe 🇹🇷</button>
+<main>
+  <h1>Gizlilik Politikası</h1>
+  <p class="muted">Son güncelleme: 13 Ekim 2026</p>
+  <nav><a href="#tr">Türkçe</a><a href="#en">English</a></nav>
+
+  <section id="tr">
+    <p>Bu politika, NoteMaster mobil uygulamasının ("Uygulama") hangi verileri topladığını, neden kullandığını, kimlerle paylaştığını ve haklarınızı açıklar. Uygulamanın geliştiricisi ve veri sorumlusu FcodeTR'dir. Sorularınız için: <a href="mailto:fcodetr@gmail.com">fcodetr@gmail.com</a></p>
+
+    <h2>1. Topladığımız veriler</h2>
+    <h3>Hesap bilgileri</h3>
+    <p>Hesap oluşturduğunuzda e-posta adresiniz ve adınız; Apple veya Google ile giriş yaparsanız bu hizmetlerin bize ilettiği kimlik bilgileri (Apple'ın "E-postamı Gizle" adresi dahil). Misafir modunda hesap oluşturulmaz.</p>
+    <h3>Oluşturduğunuz içerik</h3>
+    <p>Notlar, el yazılı notlar ve çizimler (eklediğiniz fotoğraflar dahil), görevler, etkinlikler, etiketler ve hatırlatıcılar. Hesabınız varsa bu içerik cihazlarınız arasında eşitlenmek üzere sunucularımızda saklanır; misafir modunda yalnızca cihazınızda kalır.</p>
+    <h3>Ses kayıtları</h3>
+    <p>Sesli not özelliğini kullandığınızda kaydınız yazıya dökülmek üzere işlenir (bkz. Bölüm 3). Ses kaydı yazıya döküldükten sonra tarafımızca saklanmaz.</p>
+    <h3>Google Takvim verileri</h3>
+    <p>Yalnızca Google Takvim'i bağlamayı seçerseniz: seçtiğiniz takvimlerdeki etkinlikler (başlık, açıklama, tarih, saat, konum, katılımcılar) ve takvim listeniz. Erişim belirteçleri sunucumuzda şifrelenerek saklanır.</p>
+    <h3>Cihaz ve teknik veriler</h3>
+    <p>Bildirim gönderebilmek için cihazınızın anlık bildirim kimliği (push token), cihaz platformu ve uygulama sürümü; güvenlik ve hata ayıklama için sunucu kayıtları (IP adresi, istek zamanı). Yapay zekâ kullanım sayısı plan limitleri için tutulur.</p>
+    <h3>Abonelik bilgileri</h3>
+    <p>Satın aldığınız plan, abonelik durumu ve bitiş tarihi. Ödeme bilgilerinizi biz görmeyiz; ödemeler Apple App Store veya Google Play tarafından işlenir.</p>
+
+    <h2>2. Verileri neden kullanıyoruz</h2>
+    <ul>
+      <li>Uygulamayı sunmak: içeriğinizi saklamak, cihazlarınız arasında eşitlemek, hatırlatıcı göndermek.</li>
+      <li>İstediğiniz yapay zekâ işlemlerini yapmak (Bölüm 3).</li>
+      <li>Google Takvim eşitlemesi (yalnızca bağladıysanız).</li>
+      <li>Aboneliğinizi doğrulamak ve plan özelliklerini açmak.</li>
+      <li>Güvenlik, kötüye kullanımı önleme ve hata giderme.</li>
+    </ul>
+    <p>Verilerinizi reklam, profil oluşturma veya satış amacıyla kullanmayız ve üçüncü taraflara satmayız. Uygulamada reklam ve kullanıcı takibi (tracking) yoktur.</p>
+
+    <h2>3. Yapay zekâ özellikleri (Google Gemini)</h2>
+    <p>Yapay zekâ özellikleri (özetleme, yazım düzeltme, başlık ve etiket önerme, sesli notu yazıya dökme, AI sohbet) Google'ın Gemini API hizmetiyle çalışır. Bu özellikleri ilk kullanımınızda açık izniniz istenir. İzin verirseniz yalnızca o işlem için gereken içerik (ilgili notun başlığı ve metni, sesli notun ses kaydı veya sohbete yazdıklarınız) sunucumuz üzerinden Google'a gönderilir. İzni istediğiniz zaman Uygulamada Ayarlar &gt; Yapay Zekâ Veri Paylaşımı bölümünden geri alabilirsiniz; izin vermezseniz yapay zekâ özellikleri kapalı kalır, diğer özellikler çalışmaya devam eder. Google'ın verileri işlemesi <a href="https://ai.google.dev/gemini-api/terms">Gemini API Koşulları</a>'na tabidir.</p>
+
+    <h2>4. Verileri paylaştığımız hizmet sağlayıcılar</h2>
+    <div class="table-wrap">
+    <table>
+      <tr><th>Sağlayıcı</th><th>Amaç</th><th>Veri</th></tr>
+      <tr><td>Supabase</td><td>Veritabanı, kimlik doğrulama, sunucu fonksiyonları</td><td>Hesap bilgileri, içerik, teknik kayıtlar</td></tr>
+      <tr><td>Google (Gemini API)</td><td>Yapay zekâ işlemleri (izninizle)</td><td>İşlenecek içerik ve ses kayıtları</td></tr>
+      <tr><td>Google (Calendar API)</td><td>Takvim eşitlemesi (bağlarsanız)</td><td>Takvim etkinlikleri</td></tr>
+      <tr><td>Apple, Google</td><td>Giriş, ödemeler, bildirim iletimi</td><td>Kimlik, satın alma, push token</td></tr>
+      <tr><td>Expo (650 Industries)</td><td>Bildirim iletimi ve uygulama güncellemeleri</td><td>Push token, cihaz/uygulama sürümü</td></tr>
+      <tr><td>Qonversion</td><td>Abonelik doğrulama</td><td>Kullanıcı kimliği, satın alma durumu</td></tr>
+    </table>
     </div>
+    <p>Bu sağlayıcılar verileri yalnızca bizim adımıza ve belirtilen amaç için işler. Bazı sağlayıcıların sunucuları Türkiye dışında (AB ve ABD) bulunur; aktarımlar ilgili mevzuata uygun güvencelerle yapılır. Yasal bir zorunluluk olmadıkça verilerinizi başka kimseyle paylaşmayız.</p>
 
-    <!-- English Version -->
-    <div id="content-en" class="lang-content active">
-      <h1>NoteMaster Privacy Policy</h1>
-      <p class="updated">Last Updated: September 27, 2026</p>
+    <h2>5. Google API verileri</h2>
+    <p>NoteMaster'ın Google API'lerinden aldığı bilgileri kullanması ve başka uygulamalara aktarması, Sınırlı Kullanım (Limited Use) gereklilikleri dahil olmak üzere <a href="https://developers.google.com/terms/api-services-user-data-policy">Google API Services User Data Policy</a>'ye uygundur. Google Takvim verileri yalnızca takviminizi Uygulama ile eşitlemek için kullanılır; reklam için kullanılmaz, yapay zekâ modellerinin eğitiminde kullanılmaz ve insanlar tarafından okunmaz (güvenlik, yasal zorunluluk veya sizin açık izniniz hariç).</p>
 
-      <p>NoteMaster ("we", "our app") respects user privacy and is committed to protecting your personal data. This Privacy Policy describes how information is collected, used, and protected when you use our application.</p>
+    <h2>6. Saklama ve silme</h2>
+    <p>Verileriniz hesabınız açık olduğu sürece saklanır. Hesabınızı Uygulamada Ayarlar &gt; Profil &gt; Hesabı Sil bölümünden istediğiniz an silebilirsiniz; bu işlem içeriğinizi, takvim bağlantınızı, bildirim kayıtlarınızı ve hesabınızı kalıcı olarak siler, Apple ve Google erişim izinlerini de iptal eder. Teknik kayıtlar en fazla 90 gün içinde silinir. Aboneliğinizi App Store veya Google Play ayarlarından ayrıca iptal etmeniz gerekir.</p>
 
-      <h2>1. Information We Collect</h2>
-      <ul>
-        <li><strong>Account Information:</strong> Your email address, optional full name, and authentication tokens. When logging in via Apple or Google, only necessary identity profile info is securely handled.</li>
-        <li><strong>User Content:</strong> Your notes, tasks, calendar events, tags, and drawings. In Guest mode, all data remains strictly on your local device. When signed in, data is synchronized and encrypted through our secure cloud backend.</li>
-        <li><strong>Microphone & Audio Data:</strong> Audio recordings and speech-to-text functionality are activated solely when you initiate recording. Audio is processed strictly to create your notes and transcription and is never sold or used for ad targeting.</li>
-      </ul>
+    <h2>7. Güvenlik</h2>
+    <p>Veriler aktarım sırasında şifrelenir (HTTPS). Sunucu erişimi satır düzeyinde güvenlik kurallarıyla yalnızca hesap sahibine açıktır; takvim erişim belirteçleri şifrelenmiş olarak saklanır.</p>
 
-      <h2>2. Permissions & Purposes</h2>
-      <ul>
-        <li><strong>Microphone (NSMicrophoneUsageDescription):</strong> Required to record audio notes and enable voice transcription.</li>
-        <li><strong>Speech Recognition (NSSpeechRecognitionUsageDescription):</strong> Required to convert your spoken words into text notes and tasks.</li>
-        <li><strong>Notifications:</strong> To deliver scheduled task, note, and calendar event reminders.</li>
-      </ul>
+    <h2>8. Haklarınız</h2>
+    <p>KVKK ve GDPR kapsamında verilerinize erişme, düzeltme, silme, işlemeye itiraz etme ve verilerinizi taşıma haklarına sahipsiniz. Talepleriniz için <a href="mailto:fcodetr@gmail.com">fcodetr@gmail.com</a> adresine yazabilirsiniz; en geç 30 gün içinde yanıt veririz.</p>
 
-      <h2>3. Data Security & Storage</h2>
-      <p>All data communications are encrypted in transit using industry-standard TLS/SSL protocols and protected with AES-grade encryption at rest. We never sell or rent your personal data to third parties.</p>
+    <h2>9. Çocuklar</h2>
+    <p>Uygulama 13 yaşından küçük çocuklara yönelik değildir ve bilerek bu yaştaki çocuklardan veri toplamayız.</p>
 
-      <h2>4. Account and Data Deletion (App Store Review Guideline 5.1.1v)</h2>
-      <p>Users can permanently delete their account and all associated data at any time directly within the app by going to <strong>Settings > Profile > Delete Account</strong>. You may also request deletion by contacting us at <a href="mailto:fcodetr@gmail.com">fcodetr@gmail.com</a>.</p>
+    <h2>10. Değişiklikler</h2>
+    <p>Bu politikayı güncellediğimizde yukarıdaki tarihi değiştiririz; önemli değişiklikleri Uygulama içinde bildiririz.</p>
+  </section>
 
-      <h2>5. Contact Us</h2>
-      <p>If you have any questions about this Privacy Policy, please contact us at: <a href="mailto:fcodetr@gmail.com">fcodetr@gmail.com</a></p>
+  <hr>
+
+  <section id="en">
+    <h1>Privacy Policy</h1>
+    <p class="muted">Last updated: October 13, 2026</p>
+    <p>This policy explains what data the NoteMaster mobile app ("App") collects, why, who it is shared with and your rights. The developer and data controller is FcodeTR. Contact: <a href="mailto:fcodetr@gmail.com">fcodetr@gmail.com</a></p>
+
+    <h2>1. Data we collect</h2>
+    <h3>Account</h3>
+    <p>Your email address and name when you create an account; if you sign in with Apple or Google, the identity information those services provide (including Apple's "Hide My Email" address). Guest mode creates no account.</p>
+    <h3>Your content</h3>
+    <p>Notes, handwritten notes and drawings (including photos you add), tasks, events, tags and reminders. With an account, this content is stored on our servers to sync across your devices; in guest mode it stays on your device.</p>
+    <h3>Voice recordings</h3>
+    <p>When you use voice notes, the recording is processed to produce text (see Section 3). We do not keep the audio after it has been transcribed.</p>
+    <h3>Google Calendar data</h3>
+    <p>Only if you choose to connect Google Calendar: events in the calendars you select (title, description, date, time, location, attendees) and your calendar list. Access tokens are stored encrypted on our server.</p>
+    <h3>Device and technical data</h3>
+    <p>Your device's push notification token, platform and app version, to send notifications; server logs (IP address, request time) for security and troubleshooting. An AI usage count is kept for plan limits.</p>
+    <h3>Subscription</h3>
+    <p>Your plan, subscription status and expiry date. We never see your payment details; payments are processed by the Apple App Store or Google Play.</p>
+
+    <h2>2. How we use data</h2>
+    <ul>
+      <li>To provide the App: store and sync your content, send reminders.</li>
+      <li>To perform the AI actions you request (Section 3).</li>
+      <li>Google Calendar sync (only if connected).</li>
+      <li>To verify your subscription and unlock plan features.</li>
+      <li>Security, abuse prevention and troubleshooting.</li>
+    </ul>
+    <p>We do not use your data for advertising or profiling and we do not sell it. The App contains no ads and no tracking.</p>
+
+    <h2>3. AI features (Google Gemini)</h2>
+    <p>AI features (summaries, spelling fixes, title and tag suggestions, voice transcription, AI chat) are powered by Google's Gemini API. Your explicit permission is requested the first time you use them. If you allow it, only the content needed for that action (the title and text of the note, the audio of the voice note, or what you type in the chat) is sent to Google through our server. You can withdraw permission any time in Settings &gt; AI Data Sharing; without it AI features stay off and everything else keeps working. Google's processing is governed by the <a href="https://ai.google.dev/gemini-api/terms">Gemini API Terms</a>.</p>
+
+    <h2>4. Service providers</h2>
+    <div class="table-wrap">
+    <table>
+      <tr><th>Provider</th><th>Purpose</th><th>Data</th></tr>
+      <tr><td>Supabase</td><td>Database, authentication, server functions</td><td>Account, content, technical logs</td></tr>
+      <tr><td>Google (Gemini API)</td><td>AI actions (with your permission)</td><td>Content to process, voice recordings</td></tr>
+      <tr><td>Google (Calendar API)</td><td>Calendar sync (if connected)</td><td>Calendar events</td></tr>
+      <tr><td>Apple, Google</td><td>Sign-in, payments, notification delivery</td><td>Identity, purchases, push token</td></tr>
+      <tr><td>Expo (650 Industries)</td><td>Notification delivery and app updates</td><td>Push token, device/app version</td></tr>
+      <tr><td>Qonversion</td><td>Subscription verification</td><td>User id, purchase status</td></tr>
+    </table>
     </div>
+    <p>These providers process data only on our behalf and for the stated purpose. Some of them operate servers outside Türkiye (EU and US); transfers are made with appropriate safeguards. We share data with no one else unless required by law.</p>
 
-    <!-- Turkish Version -->
-    <div id="content-tr" class="lang-content">
-      <h1>NoteMaster Gizlilik Politikası</h1>
-      <p class="updated">Son Güncelleme: 27 Eylül 2026</p>
+    <h2>5. Google API data</h2>
+    <p>NoteMaster's use and transfer of information received from Google APIs adheres to the <a href="https://developers.google.com/terms/api-services-user-data-policy">Google API Services User Data Policy</a>, including the Limited Use requirements. Google Calendar data is used only to sync your calendar with the App; it is not used for advertising, not used to train AI models, and not read by humans (except for security, legal obligations or with your explicit consent).</p>
 
-      <p>NoteMaster ("biz", "uygulamamız"), kullanıcılarımızın gizliliğine saygı duyar ve kişisel verilerin korunmasını taahhüt eder. Bu Gizlilik Politikası, uygulamamızı kullandığınızda toplanan, işlenen ve korunan bilgileri açıklar.</p>
+    <h2>6. Retention and deletion</h2>
+    <p>Data is kept while your account exists. You can delete your account at any time in the App under Settings &gt; Profile &gt; Delete Account; this permanently deletes your content, calendar connection, notification registrations and account, and revokes Apple and Google access. Technical logs are deleted within 90 days. Subscriptions must be cancelled separately in App Store or Google Play settings.</p>
 
-      <h2>1. Toplanan Bilgiler</h2>
-      <ul>
-        <li><strong>Hesap Bilgileri:</strong> E-posta adresiniz, adınız soyadınız (isteğe bağlı) ve kimlik doğrulama belirteçleri. Apple veya Google ile giriş yapıldığında yalnızca kimlik doğrulama için gerekli temel profil bilgileri alınır.</li>
-        <li><strong>Uygulama İçeriği:</strong> Oluşturduğunuz notlar, görevler, takvim etkinlikleri ve çizimler. Misafir modunda veriler yalnızca yerel cihazınızda saklanır. Giriş yapıldığında veriler bulut veritabanında şifrelenerek senkronize edilir.</li>
-        <li><strong>Mikrofon ve Ses Verisi:</strong> Sesli not alma ve konuşmayı metne dökme özelliği yalnızca siz mikrofon düğmesine bastığınızda geçici olarak kullanılır. Ses kayıtları üçüncü taraflara reklam amacıyla satılmaz.</li>
-      </ul>
+    <h2>7. Security</h2>
+    <p>Data is encrypted in transit (HTTPS). Server access is restricted to the account owner by row-level security rules; calendar access tokens are stored encrypted.</p>
 
-      <h2>2. İzinler ve Kullanım Amaçları</h2>
-      <ul>
-        <li><strong>Mikrofon (NSMicrophoneUsageDescription):</strong> Sesli not kaydı ve transkripsiyon için.</li>
-        <li><strong>Ses Tanıma (NSSpeechRecognitionUsageDescription):</strong> Konuşulan içeriği metne ve görevlere dönüştürmek için.</li>
-        <li><strong>Bildirimler:</strong> Belirlediğiniz görev ve etkinlik hatırlatıcılarını zamanında iletmek için.</li>
-      </ul>
+    <h2>8. Your rights</h2>
+    <p>Under KVKK and the GDPR you have the right to access, correct, delete, object to processing of and port your data. Write to <a href="mailto:fcodetr@gmail.com">fcodetr@gmail.com</a>; we respond within 30 days.</p>
 
-      <h2>3. Veri Güvenliği ve Saklama</h2>
-      <p>Verileriniz endüstri standardı güvenlik protokolleri (SSL/TLS ve AES şifreleme) ile korunur. Verileriniz asla üçüncü taraf reklam ağlarıyla paylaşılmaz.</p>
+    <h2>9. Children</h2>
+    <p>The App is not directed to children under 13 and we do not knowingly collect their data.</p>
 
-      <h2>4. Hesap ve Veri Silme Talebi (Account Deletion)</h2>
-      <p>Kullanıcılarımız diledikleri zaman uygulama içindeki <strong>Ayarlar > Profil > Hesabımı Sil</strong> adımlarını takip ederek tüm verileriyle birlikte hesaplarını kalıcı olarak silebilirler. Alternatif olarak <a href="mailto:fcodetr@gmail.com">fcodetr@gmail.com</a> adresine e-posta göndererek silme talebinde bulunabilirsiniz.</p>
-
-      <h2>5. İletişim</h2>
-      <p>Gizlilik politikamızla ilgili soru ve önerileriniz için: <a href="mailto:fcodetr@gmail.com">fcodetr@gmail.com</a></p>
-    </div>
-  </div>
-
-  <script>
-    function switchLang(lang) {
-      document.querySelectorAll('.lang-content').forEach(el => el.classList.remove('active'));
-      document.querySelectorAll('.lang-btn').forEach(el => el.classList.remove('active'));
-      document.getElementById('content-' + lang).classList.add('active');
-      event.target.classList.add('active');
-    }
-  </script>
+    <h2>10. Changes</h2>
+    <p>When we update this policy we change the date above and announce significant changes in the App.</p>
+  </section>
+</main>
 </body>
 </html>
