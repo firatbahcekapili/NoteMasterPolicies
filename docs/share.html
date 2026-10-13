@@ -1,358 +1,257 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import {
-    View,
-    Text,
-    StyleSheet,
-    Modal,
-    TouchableOpacity,
-    Share,
-    ActivityIndicator,
-    Clipboard,
-} from 'react-native';
-import { useRouter } from 'expo-router';
-import { supabase } from '../lib/supabase';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useTheme } from '../context/ThemeContext';
-import { SPACING, RADIUS, TYPOGRAPHY } from '../constants/theme';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Share2, Copy, X, Check, Lock, RefreshCw, AlertCircle } from 'lucide-react-native';
-import { useTranslation } from 'react-i18next';
-import { getAppUrls } from '../utils/configService';
-import { PremiumLoader } from './ui/PremiumLoader';
-
-export type ShareItemType = 'note' | 'task' | 'event';
-
-interface ShareLinkModalProps {
-    visible: boolean;
-    onClose: () => void;
-    itemType: ShareItemType;
-    itemId: string;
-    itemTitle: string;
-    hasAccess: boolean;
-}
-
-// ─── Config ──────────────────────────────────────────────────────────────
-
-const GUEST_MODE_KEY = 'guest_mode_active';
-
-// ─── Token Generator ─────────────────────────────────────────────────────
-
-const generateToken = (): string => {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    let result = '';
-    for (let i = 0; i < 24; i++) {
-        result += chars.charAt(Math.floor(Math.random() * chars.length));
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex">
+  <title>Paylaşılan Not • NoteMaster</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0A0D14;
+      --card-bg: rgba(19, 24, 38, 0.92);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text: #F8FAFC;
+      --text-muted: #94A3B8;
+      --primary: #6366F1;
+      --danger: #EF4444;
     }
-    return result;
-};
-
-// ─── Supabase Token Helpers ───────────────────────────────────────────────
-
-const getExpiresAt = (): string => {
-    const d = new Date();
-    d.setFullYear(d.getFullYear() + 100); // Permanent / indefinite validity until revoked
-    return d.toISOString();
-};
-
-/** Fetch existing valid token from Supabase for this item */
-const fetchExistingToken = async (
-    userId: string,
-    type: ShareItemType,
-    itemId: string,
-): Promise<string | null> => {
-    const { data } = await supabase
-        .from('share_tokens')
-        .select('token')
-        .eq('user_id', userId)
-        .eq('type', type)
-        .eq('item_id', itemId)
-        .eq('revoked', false)
-        .gt('expires_at', new Date().toISOString())
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .single();
-    return data?.token ?? null;
-};
-
-/** Insert a new token into Supabase */
-const createToken = async (
-    userId: string,
-    type: ShareItemType,
-    itemId: string,
-): Promise<string> => {
-    const token = generateToken();
-    const { error } = await supabase.from('share_tokens').insert({
-        token,
-        type,
-        item_id: itemId,
-        user_id: userId,
-        expires_at: getExpiresAt(),
-    });
-    // Without the row the link opens as "invalid": do not show it.
-    if (error) throw new Error(error.message);
-    return token;
-};
-
-/** Revoke all tokens for this item and create a fresh one */
-const revokeAndRefreshToken = async (
-    userId: string,
-    type: ShareItemType,
-    itemId: string,
-): Promise<string> => {
-    await supabase
-        .from('share_tokens')
-        .update({ revoked: true })
-        .eq('user_id', userId)
-        .eq('type', type)
-        .eq('item_id', itemId);
-    return createToken(userId, type, itemId);
-};
-
-// ─── Guest fallback: AsyncStorage tokens ─────────────────────────────────
-
-const GUEST_TOKENS_KEY = '@nm_share_tokens';
-
-interface GuestToken {
-    token: string;
-    type: ShareItemType;
-    itemId: string;
-    expiresAt: string;
-    revoked: boolean;
-}
-
-const getOrCreateGuestToken = async (type: ShareItemType, itemId: string): Promise<string> => {
-    const raw = await AsyncStorage.getItem(GUEST_TOKENS_KEY);
-    const records: GuestToken[] = raw ? JSON.parse(raw) : [];
-    const now = new Date();
-    const active = records.filter(r => !r.revoked && new Date(r.expiresAt) > now);
-    const existing = active.find(r => r.type === type && r.itemId === itemId);
-    if (existing) {
-        await AsyncStorage.setItem(GUEST_TOKENS_KEY, JSON.stringify(active));
-        return existing.token;
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+      line-height: 1.6;
     }
-    const d = new Date(now);
-    d.setFullYear(d.getFullYear() + 100);
-    const record: GuestToken = { token: generateToken(), type, itemId, expiresAt: d.toISOString(), revoked: false };
-    await AsyncStorage.setItem(GUEST_TOKENS_KEY, JSON.stringify([...active, record]));
-    return record.token;
-};
+    .container { width: 100%; max-width: 480px; }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 28px;
+      padding: 32px 24px 28px;
+      box-shadow: 0 20px 48px rgba(0, 0, 0, 0.6);
+      position: relative;
+      overflow: hidden;
+    }
+    .stripe { position: absolute; top: 0; left: 0; right: 0; height: 5px; background: var(--primary); }
+    .badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 12px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+    .badge .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--primary); }
+    h1 { font-size: 22px; font-weight: 800; line-height: 1.3; margin-bottom: 6px; word-wrap: break-word; }
+    .meta { font-size: 13px; color: var(--text-muted); margin-bottom: 18px; }
+    .meta span + span::before { content: " · "; }
+    .content {
+      font-size: 15px;
+      color: #E2E8F0;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      max-height: 55vh;
+      overflow-y: auto;
+      padding: 16px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+    }
+    .content:empty { display: none; }
+    .actions { display: flex; flex-direction: column; gap: 10px; margin-top: 22px; }
+    .btn {
+      display: flex; align-items: center; justify-content: center;
+      min-height: 48px; padding: 12px 18px;
+      border-radius: 14px;
+      font-family: inherit; font-size: 15px; font-weight: 700;
+      text-decoration: none; cursor: pointer; border: none;
+    }
+    .btn-primary { background: var(--primary); color: #FFFFFF; }
+    .btn-outline { background: transparent; color: var(--text); border: 1px solid var(--card-border); }
+    .store-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .center { text-align: center; }
+    .icon {
+      width: 64px; height: 64px; border-radius: 20px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 28px; margin: 0 auto 16px;
+      background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+    .notice { color: var(--text-muted); font-size: 14px; margin-top: 6px; }
+    .spinner {
+      width: 36px; height: 36px; margin: 24px auto;
+      border: 3px solid rgba(255, 255, 255, 0.1); border-top-color: var(--primary);
+      border-radius: 50%; animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    footer { margin-top: 20px; font-size: 12px; color: var(--text-muted); text-align: center; }
+    footer a { color: var(--text-muted); }
+    [hidden] { display: none !important; }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <div class="card" id="card">
+      <div class="stripe" id="stripe"></div>
 
-const revokeAndRefreshGuestToken = async (type: ShareItemType, itemId: string): Promise<string> => {
-    const raw = await AsyncStorage.getItem(GUEST_TOKENS_KEY);
-    const records: GuestToken[] = raw ? JSON.parse(raw) : [];
-    const updated = records.map(r =>
-        r.type === type && r.itemId === itemId ? { ...r, revoked: true } : r
-    );
-    await AsyncStorage.setItem(GUEST_TOKENS_KEY, JSON.stringify(updated));
-    return getOrCreateGuestToken(type, itemId);
-};
+      <div id="loading"><div class="spinner"></div></div>
 
-// ─── Component ───────────────────────────────────────────────────────────
+      <div id="error" class="center" hidden>
+        <div class="icon">⚠️</div>
+        <h1 id="error-title" style="color: var(--danger);">Bağlantı Geçersiz</h1>
+        <p class="notice" id="error-message">Bu paylaşım bağlantısı kaldırılmış veya süresi dolmuş.</p>
+      </div>
 
-export const ShareLinkModal: React.FC<ShareLinkModalProps> = ({
-    visible,
-    onClose,
-    itemType,
-    itemId,
-    itemTitle,
-    hasAccess,
-}) => {
-    const { theme, isDark } = useTheme();
-    const { t } = useTranslation();
-    const router = useRouter();
-    const insets = useSafeAreaInsets();
+      <div id="item" hidden>
+        <div class="badge"><span class="dot" id="dot"></span><span id="type-label">Not</span></div>
+        <h1 id="title"></h1>
+        <div class="meta" id="meta"></div>
+        <div class="content" id="content"></div>
+      </div>
 
-    const [token, setToken] = useState<string | null>(null);
-    const [loading, setLoading] = useState(false);
-    const [revoking, setRevoking] = useState(false);
-    const [copied, setCopied] = useState(false);
-    const [sharing, setSharing] = useState(false);
+      <div class="actions">
+        <a class="btn btn-primary" id="open-app" hidden>Uygulamada Aç</a>
+        <div id="stores"></div>
+      </div>
+    </div>
+    <footer>NoteMaster ile paylaşıldı</footer>
+  </main>
 
-    const shareLink = token ? `${getAppUrls().share_base}${token}` : '';
+  <script>
+    (function () {
+      // Public project URL; the data comes from the `share` edge function.
+      var SHARE_ENDPOINT = 'https://mwqlisyiczrqhuiacdfj.supabase.co/functions/v1/share';
+      var DEFAULT_PLAY = 'https://play.google.com/store/apps/details?id=com.fcodetr.notemaster';
+      var DEFAULT_APPLE = '';
 
-    const loadToken = useCallback(async () => {
-        if (!hasAccess || !itemId) return;
-        setLoading(true);
-        try {
-            const isGuest = (await AsyncStorage.getItem(GUEST_MODE_KEY)) === 'true';
-            if (isGuest) {
-                setToken(await getOrCreateGuestToken(itemType, itemId));
-                return;
-            }
-            const { data: { session } } = await supabase.auth.getSession();
-            if (!session?.user) return;
-            const existing = await fetchExistingToken(session.user.id, itemType, itemId);
-            setToken(existing ?? await createToken(session.user.id, itemType, itemId));
-        } catch (e) {
-            console.warn('[ShareLinkModal] Token load error:', e);
-        } finally {
-            setLoading(false);
+      var ua = navigator.userAgent || '';
+      var isIos = /iPhone|iPad|iPod/i.test(ua) || (/Macintosh/.test(ua) && 'ontouchend' in document);
+      var isAndroid = /Android/i.test(ua);
+      var isEn = (navigator.language || '').toLowerCase().indexOf('tr') !== 0;
+
+      var TEXT = isEn ? {
+        note: 'Note', task: 'Task', event: 'Event',
+        openApp: 'Open in App', play: 'Get it on Google Play', apple: 'Download on the App Store',
+        invalidTitle: 'Link Unavailable', invalidMsg: 'This shared link was removed or has expired.',
+        missingMsg: 'The share link is incomplete.', networkMsg: 'Could not load the shared item. Please try again.',
+        untitled: 'Untitled', footer: 'Shared with NoteMaster'
+      } : {
+        note: 'Not', task: 'Görev', event: 'Etkinlik',
+        openApp: 'Uygulamada Aç', play: "Google Play'den İndir", apple: "App Store'dan İndir",
+        invalidTitle: 'Bağlantı Geçersiz', invalidMsg: 'Bu paylaşım bağlantısı kaldırılmış veya süresi dolmuş.',
+        missingMsg: 'Paylaşım bağlantısı eksik.', networkMsg: 'Paylaşılan içerik yüklenemedi. Lütfen tekrar deneyin.',
+        untitled: 'Başlıksız', footer: 'NoteMaster ile paylaşıldı'
+      };
+      if (isEn) document.documentElement.lang = 'en';
+      document.querySelector('footer').textContent = TEXT.footer;
+
+      var $ = function (id) { return document.getElementById(id); };
+      var show = function (id) { $(id).hidden = false; };
+      var hide = function (id) { $(id).hidden = true; };
+
+      // Only #rgb / #rrggbb colors from the data are used in styles.
+      var safeColor = function (c) { return /^#[0-9a-f]{3}([0-9a-f]{3})?$/i.test(c || '') ? c : '#6366F1'; };
+
+      var formatDate = function (value, withTime) {
+        if (!value) return '';
+        var d = new Date(value);
+        if (isNaN(d.getTime())) return '';
+        var opts = { day: 'numeric', month: 'long', year: 'numeric' };
+        if (withTime) { opts.hour = '2-digit'; opts.minute = '2-digit'; }
+        return d.toLocaleString(isEn ? 'en-US' : 'tr-TR', opts);
+      };
+
+      var renderStores = function (playUrl, appleUrl) {
+        var box = $('stores');
+        box.textContent = '';
+        var make = function (href, label) {
+          var a = document.createElement('a');
+          a.className = 'btn btn-outline';
+          a.href = href; a.target = '_blank'; a.rel = 'noopener';
+          a.textContent = label;
+          return a;
+        };
+        var links = [];
+        if (isIos) { if (appleUrl) links.push(make(appleUrl, TEXT.apple)); }
+        else if (isAndroid) { if (playUrl) links.push(make(playUrl, TEXT.play)); }
+        else {
+          if (playUrl) links.push(make(playUrl, TEXT.play));
+          if (appleUrl) links.push(make(appleUrl, TEXT.apple));
         }
-    }, [hasAccess, itemType, itemId]);
+        if (links.length > 1) box.className = 'store-grid';
+        links.forEach(function (a) { box.appendChild(a); });
+      };
 
-    useEffect(() => {
-        if (visible && hasAccess) loadToken();
-        if (!visible) setCopied(false);
-    }, [visible, hasAccess, loadToken]);
+      var showError = function (message) {
+        hide('loading');
+        $('error-title').textContent = TEXT.invalidTitle;
+        $('error-message').textContent = message || TEXT.invalidMsg;
+        $('stripe').style.background = 'var(--danger)';
+        show('error');
+        renderStores(DEFAULT_PLAY, DEFAULT_APPLE);
+      };
 
-    const handleCopy = () => {
-        if (!shareLink) return;
-        Clipboard.setString(shareLink);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2500);
-    };
+      var token = new URLSearchParams(window.location.search).get('t');
+      if (!token || !/^[A-Za-z0-9_-]{8,128}$/.test(token)) {
+        showError(TEXT.missingMsg);
+        return;
+      }
 
-    const handleNativeShare = async () => {
-        if (!shareLink) return;
-        setSharing(true);
-        try {
-            await Share.share({
-                message: t('share.shareMessage', { title: itemTitle, link: shareLink }),
-                url: shareLink,
-                title: itemTitle,
-            });
-        } finally {
-            setSharing(false);
-        }
-    };
+      fetch(SHARE_ENDPOINT + '?t=' + encodeURIComponent(token) + '&format=json', { headers: { Accept: 'application/json' } })
+        .then(function (res) { return res.json().catch(function () { return {}; }); })
+        .then(function (res) {
+          if (!res || !res.success || !res.item) { showError(); return; }
 
-    const handleRevoke = async () => {
-        setRevoking(true);
-        try {
-            const isGuest = (await AsyncStorage.getItem(GUEST_MODE_KEY)) === 'true';
-            if (isGuest) {
-                setToken(await revokeAndRefreshGuestToken(itemType, itemId));
-                return;
-            }
-            const { data: { session } } = await supabase.auth.getSession();
-            if (!session?.user) return;
-            setToken(await revokeAndRefreshToken(session.user.id, itemType, itemId));
-        } catch (e) {
-            // The old link is revoked but the new one was not saved.
-            console.warn('[ShareLinkModal] Token refresh error:', e);
-            setToken(null);
-        } finally {
-            setRevoking(false);
-        }
-    };
+          var item = res.item;
+          var type = item.type || res.type || 'note';
+          var color = safeColor(item.color);
 
-    const handleUpgrade = () => {
-        onClose();
-        setTimeout(() => router.push('/settings/plans'), 200);
-    };
+          hide('loading');
+          $('stripe').style.background = color;
+          $('dot').style.background = color;
+          $('type-label').textContent = TEXT[type] || TEXT.note;
+          $('title').textContent = item.title || TEXT.untitled;
+          document.title = (item.title || TEXT.untitled) + ' • NoteMaster';
 
-    const tertiaryColor = theme.tertiary || theme.primary;
-    const successColor = theme.success || theme.accent;
-    const inputBgColor = theme.inputBackground || (isDark ? theme.cardBackgroundLight : theme.background);
+          var meta = [];
+          if (type === 'event') {
+            var start = formatDate(item.start_at || item.date, !!item.start_at);
+            if (start) meta.push(start);
+            if (item.location) meta.push(item.location);
+          } else {
+            var date = formatDate(item.updated_at || item.created_at, false);
+            if (date) meta.push(date);
+          }
+          var metaBox = $('meta');
+          meta.forEach(function (m) {
+            var s = document.createElement('span');
+            s.textContent = m;
+            metaBox.appendChild(s);
+          });
 
-    return (
-        <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
-            <TouchableOpacity style={[styles.overlay, { backgroundColor: theme.overlay || 'rgba(0,0,0,0.5)' }]} activeOpacity={1} onPress={onClose}>
-                <TouchableOpacity activeOpacity={1} style={[styles.sheet, { backgroundColor: theme.cardBackground, paddingBottom: Math.max(insets.bottom + 16, 36) }]}>
+          // Plain text: never interpreted as HTML.
+          $('content').textContent = item.content || '';
+          show('item');
 
-                    <View style={[styles.handle, { backgroundColor: theme.border }]} />
-
-                    <View style={styles.header}>
-                        <View style={[styles.iconWrap, { backgroundColor: tertiaryColor + '20' }]}>
-                            <Share2 size={22} color={tertiaryColor} />
-                        </View>
-                        <Text style={[styles.title, { color: theme.text }]}>{t('share.title')}</Text>
-                        <TouchableOpacity onPress={onClose} style={styles.closeBtn}>
-                            <X size={20} color={theme.textSecondary} />
-                        </TouchableOpacity>
-                    </View>
-
-                    {hasAccess ? (
-                        <>
-                            <View style={[styles.securityBadge, { backgroundColor: successColor + '15', borderColor: successColor + '30' }]}>
-                                <AlertCircle size={13} color={successColor} />
-                                <Text style={[styles.securityText, { color: successColor }]}>{t('share.secureNote')}</Text>
-                            </View>
-
-                            {loading ? (
-                                <View style={styles.tokenLoader}><PremiumLoader size="medium" color={theme.primary} /></View>
-                            ) : (
-                                <View style={[styles.linkBox, { backgroundColor: inputBgColor, borderColor: theme.border }]}>
-                                    <Text style={[styles.linkText, { color: theme.textSecondary }]} numberOfLines={1}>
-                                        {shareLink}
-                                    </Text>
-                                </View>
-                            )}
-
-                            <Text style={[styles.ttlNote, { color: theme.textTertiary }]}>
-                                {t('share.expiresIn')}
-                            </Text>
-
-                            <View style={styles.actions}>
-                                <TouchableOpacity
-                                    style={[styles.actionBtn, { backgroundColor: copied ? successColor : theme.primary }]}
-                                    onPress={handleCopy}
-                                    disabled={loading || !token}
-                                >
-                                    {copied ? <Check size={18} color={theme.iconText} /> : <Copy size={18} color={theme.iconText} />}
-                                    <Text style={[styles.actionBtnText, { color: theme.iconText }]}>{copied ? t('share.copied') : t('share.copyLink')}</Text>
-                                </TouchableOpacity>
-
-                                <TouchableOpacity
-                                    style={[styles.actionBtn, styles.actionBtnOutline, { borderColor: theme.border }]}
-                                    onPress={handleNativeShare}
-                                    disabled={sharing || loading || !token}
-                                >
-                                    {sharing ? <PremiumLoader size="small" color={theme.text} /> : <Share2 size={18} color={theme.text} />}
-                                    <Text style={[styles.actionBtnText, { color: theme.text }]}>{t('share.shareWith')}</Text>
-                                </TouchableOpacity>
-                            </View>
-
-                            <TouchableOpacity style={styles.revokeRow} onPress={handleRevoke} disabled={revoking}>
-                                {revoking ? <PremiumLoader size="small" color={theme.textTertiary} /> : <RefreshCw size={13} color={theme.textTertiary} />}
-                                <Text style={[styles.revokeText, { color: theme.textTertiary }]}>{t('share.revokeLink')}</Text>
-                            </TouchableOpacity>
-
-                            <Text style={[styles.legalNote, { color: theme.textTertiary }]}>{t('share.legalNote')}</Text>
-                        </>
-                    ) : (
-                        <View style={styles.upsell}>
-                            <View style={[styles.lockWrap, { backgroundColor: tertiaryColor + '20' }]}>
-                                <Lock size={32} color={tertiaryColor} />
-                            </View>
-                            <Text style={[styles.upsellTitle, { color: theme.text }]}>{t('share.businessOnly')}</Text>
-                            <Text style={[styles.upsellDesc, { color: theme.textSecondary }]}>{t('share.businessOnlyDesc')}</Text>
-                            <TouchableOpacity style={[styles.upgradeBtn, { backgroundColor: tertiaryColor }]} onPress={handleUpgrade}>
-                                <Text style={[styles.upgradeBtnText, { color: theme.iconText }]}>{t('share.upgradeToBusiness')}</Text>
-                            </TouchableOpacity>
-                        </View>
-                    )}
-                </TouchableOpacity>
-            </TouchableOpacity>
-        </Modal>
-    );
-};
-
-const styles = StyleSheet.create({
-    overlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end' },
-    sheet: { width: '100%', maxWidth: 640, alignSelf: 'center', borderTopLeftRadius: RADIUS.xl, borderTopRightRadius: RADIUS.xl, padding: SPACING.lg, paddingBottom: 36, gap: SPACING.md },
-    handle: { width: 40, height: 4, borderRadius: 2, alignSelf: 'center', marginBottom: SPACING.sm },
-    header: { flexDirection: 'row', alignItems: 'center', gap: SPACING.sm },
-    iconWrap: { width: 40, height: 40, borderRadius: RADIUS.md, justifyContent: 'center', alignItems: 'center' },
-    title: { ...TYPOGRAPHY.subtitle, fontWeight: '700', flex: 1 },
-    closeBtn: { padding: 4 },
-    securityBadge: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: SPACING.md, paddingVertical: 8, borderRadius: RADIUS.md, borderWidth: 1 },
-    securityText: { fontSize: 12, fontWeight: '600', flex: 1 },
-    tokenLoader: { height: 46, justifyContent: 'center', alignItems: 'center' },
-    linkBox: { padding: SPACING.md, borderRadius: RADIUS.md, borderWidth: 1 },
-    linkText: { fontSize: 12, fontFamily: 'monospace', letterSpacing: 0.5 },
-    ttlNote: { fontSize: 11, marginTop: -SPACING.xs },
-    actions: { flexDirection: 'row', gap: SPACING.sm },
-    actionBtn: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: SPACING.sm, paddingVertical: SPACING.md, borderRadius: RADIUS.md },
-    actionBtnOutline: { backgroundColor: 'transparent', borderWidth: 1 },
-    actionBtnText: { fontWeight: '700', fontSize: 14 },
-    revokeRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, paddingVertical: SPACING.xs },
-    revokeText: { fontSize: 12 },
-    legalNote: { fontSize: 11, textAlign: 'center', lineHeight: 16, marginTop: -SPACING.xs },
-    upsell: { alignItems: 'center', gap: SPACING.md, paddingVertical: SPACING.xl },
-    lockWrap: { width: 72, height: 72, borderRadius: RADIUS.full, justifyContent: 'center', alignItems: 'center' },
-    upsellTitle: { ...TYPOGRAPHY.h3, fontWeight: '700', textAlign: 'center' },
-    upsellDesc: { ...TYPOGRAPHY.body, textAlign: 'center', lineHeight: 22 },
-    upgradeBtn: { paddingHorizontal: SPACING.xl, paddingVertical: SPACING.md, borderRadius: RADIUS.full, marginTop: SPACING.sm },
-    upgradeBtnText: { fontWeight: '700', fontSize: 15 },
-});
+          var deepLink = res.deepLinkUrl || ('notemaster://s/' + encodeURIComponent(token));
+          if (isIos || isAndroid) {
+            var openBtn = $('open-app');
+            openBtn.href = deepLink;
+            openBtn.textContent = TEXT.openApp;
+            show('open-app');
+            // Try to open the app; if it is not installed the page stays.
+            setTimeout(function () { window.location.href = deepLink; }, 300);
+          }
+          renderStores(res.playStoreUrl || DEFAULT_PLAY, res.appStoreUrl || DEFAULT_APPLE);
+        })
+        .catch(function () { showError(TEXT.networkMsg); });
+    })();
+  </script>
+</body>
+</html>
