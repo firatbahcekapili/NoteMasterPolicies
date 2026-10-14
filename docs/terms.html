@@ -1,91 +1,57 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr" data-title-tr="Kullanım Koşulları — NoteMaster" data-title-en="Terms of Service — NoteMaster">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Terms of Service - NoteMaster</title>
-  <style>
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      line-height: 1.6;
-      color: #1f2937;
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 32px 20px;
-      background-color: #f9fafb;
-    }
-    .card {
-      background: #ffffff;
-      padding: 36px;
-      border-radius: 12px;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    }
-    .lang-switcher {
-      display: flex;
-      justify-content: flex-end;
-      gap: 8px;
-      margin-bottom: 20px;
-    }
-    .lang-btn {
-      padding: 6px 14px;
-      border: 1px solid #d1d5db;
-      background: #ffffff;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: 600;
-      font-size: 13px;
-      color: #4b5563;
-      transition: all 0.2s;
-    }
-    .lang-btn.active {
-      background: #4f46e5;
-      color: #ffffff;
-      border-color: #4f46e5;
-    }
-    h1 { color: #111827; margin-bottom: 8px; font-size: 26px; }
-    h2 { color: #374151; margin-top: 24px; border-bottom: 1px solid #e5e7eb; padding-bottom: 6px; font-size: 18px; }
-    p, li { color: #4b5563; font-size: 15px; }
-    .updated { color: #6b7280; font-size: 14px; margin-bottom: 24px; }
-    a { color: #4f46e5; text-decoration: none; }
-    .lang-content { display: none; }
-    .lang-content.active { display: block; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kullanım Koşulları — NoteMaster</title>
+<meta name="description" content="NoteMaster kullanım koşulları.">
+<meta name="theme-color" content="#F6F5F2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0A0A0B" media="(prefers-color-scheme: dark)">
+<link rel="icon" type="image/png" sizes="64x64" href="assets/favicon-64.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="stylesheet" href="assets/legal.css">
 </head>
 <body>
-  <div class="card">
-    <div class="lang-switcher">
-      <button class="lang-btn active" onclick="switchLang('en')">English 🇬🇧</button>
-      <button class="lang-btn" onclick="switchLang('tr')">Türkçe 🇹🇷</button>
+<div class="progress" aria-hidden="true"></div>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="index.html"><img class="mark" src="assets/icon-128.png" alt="" width="32" height="32">NoteMaster</a>
+    <nav class="nav-links" aria-label="Main">
+      <a href="index.html" data-tr="Ana sayfa" data-en="Home">Ana sayfa</a>
+      <a href="privacy.html" data-tr="Gizlilik" data-en="Privacy">Gizlilik</a>
+      <a href="terms.html" aria-current="page" data-tr="Kullanım Koşulları" data-en="Terms">Kullanım Koşulları</a>
+    </nav>
+    <div class="nav-right">
+      <button class="lang" id="lang" type="button" aria-label="Language">EN</button>
+      <a class="btn-sm" href="index.html#download" data-tr="İndir" data-en="Download">İndir</a>
     </div>
+  </div>
+</header>
 
-    <!-- English Version -->
-    <div id="content-en" class="lang-content active">
-      <h1>NoteMaster Terms of Service</h1>
-      <p class="updated">Last Updated: September 27, 2026</p>
+<div class="head">
+  <div class="wrap">
+    <span class="eyebrow rv" data-tr="Yasal" data-en="Legal">Yasal</span>
+    <h1 class="rv" style="--d:.08s" data-lang="tr">Kullanım <em>Koşulları</em></h1>
+    <h1 class="rv" style="--d:.08s" data-lang="en" hidden>Terms of <em>Service</em></h1>
+    <p class="updated rv" style="--d:.16s" data-lang="tr">Son Güncelleme: 27 Eylül 2026</p>
+    <p class="updated rv" style="--d:.16s" data-lang="en" hidden>Last Updated: September 27, 2026</p>
+  </div>
+</div>
 
-      <p>By downloading, installing, or using NoteMaster, you agree to be bound by these Terms of Service.</p>
+<div class="wrap layout">
+  <aside class="toc" aria-label="Contents">
+    <p class="toc-title" data-tr="İçindekiler" data-en="Contents">İçindekiler</p>
+    <ol data-toc></ol>
+  </aside>
 
-      <h2>1. Use of Services</h2>
-      <p>NoteMaster is a productivity application designed for taking notes, managing tasks, and organizing calendar events. You agree not to misuse our services or use them for unlawful activities.</p>
+  <main class="doc rv" style="--d:.2s">
+    <details class="toc-mobile">
+      <summary data-tr="İçindekiler" data-en="Contents">İçindekiler</summary>
+      <ol data-toc></ol>
+    </details>
 
-      <h2>2. User Accounts & Security</h2>
-      <p>You are responsible for maintaining the confidentiality of your login credentials and for all activities that occur under your account.</p>
-
-      <h2>3. Intellectual Property</h2>
-      <p>All intellectual property rights in NoteMaster (software, trademarks, interface designs) belong to NoteMaster. Content created by users (notes, tasks) remains the property of the respective user.</p>
-
-      <h2>4. Termination & Deletion</h2>
-      <p>You may terminate your account at any time by deleting your account through the in-app settings. We reserve the right to suspend or terminate accounts that violate our terms.</p>
-
-      <h2>5. Contact Us</h2>
-      <p>For questions or support regarding these terms, please contact: <a href="mailto:fcodetr@gmail.com">fcodetr@gmail.com</a></p>
-    </div>
-
-    <!-- Turkish Version -->
-    <div id="content-tr" class="lang-content">
-      <h1>NoteMaster Kullanım Koşulları</h1>
-      <p class="updated">Son Güncelleme: 27 Eylül 2026</p>
-
+    <section id="tr" data-lang="tr">
       <p>NoteMaster uygulamasını indirerek, yükleyerek veya kullanarak bu Kullanım Koşullarını kabul etmiş olursunuz.</p>
 
       <h2>1. Hizmetin Kullanımı</h2>
@@ -102,16 +68,49 @@
 
       <h2>5. İletişim</h2>
       <p>Kullanım koşullarıyla ilgili destek için: <a href="mailto:fcodetr@gmail.com">fcodetr@gmail.com</a></p>
-    </div>
-  </div>
+    </section>
 
-  <script>
-    function switchLang(lang) {
-      document.querySelectorAll('.lang-content').forEach(el => el.classList.remove('active'));
-      document.querySelectorAll('.lang-btn').forEach(el => el.classList.remove('active'));
-      document.getElementById('content-' + lang).classList.add('active');
-      event.target.classList.add('active');
-    }
-  </script>
+    <section id="en" data-lang="en" hidden>
+      <p>By downloading, installing, or using NoteMaster, you agree to be bound by these Terms of Service.</p>
+
+      <h2>1. Use of Services</h2>
+      <p>NoteMaster is a productivity application designed for taking notes, managing tasks, and organizing calendar events. You agree not to misuse our services or use them for unlawful activities.</p>
+
+      <h2>2. User Accounts &amp; Security</h2>
+      <p>You are responsible for maintaining the confidentiality of your login credentials and for all activities that occur under your account.</p>
+
+      <h2>3. Intellectual Property</h2>
+      <p>All intellectual property rights in NoteMaster (software, trademarks, interface designs) belong to NoteMaster. Content created by users (notes, tasks) remains the property of the respective user.</p>
+
+      <h2>4. Termination &amp; Deletion</h2>
+      <p>You may terminate your account at any time by deleting your account through the in-app settings. We reserve the right to suspend or terminate accounts that violate our terms.</p>
+
+      <h2>5. Contact Us</h2>
+      <p>For questions or support regarding these terms, please contact: <a href="mailto:fcodetr@gmail.com">fcodetr@gmail.com</a></p>
+    </section>
+
+    <div class="contact-card">
+      <img src="assets/icon-128.png" alt="" width="60" height="60">
+      <div>
+        <h3 data-tr="Bir sorunuz mu var?" data-en="Have a question?">Bir sorunuz mu var?</h3>
+        <p><span data-tr="Bize yazın:" data-en="Write to us:">Bize yazın:</span> <a href="mailto:fcodetr@gmail.com">fcodetr@gmail.com</a></p>
+      </div>
+    </div>
+  </main>
+</div>
+
+<footer>
+  <div class="wrap foot">
+    <a class="brand" href="index.html"><img class="mark" src="assets/icon-128.png" alt="" width="32" height="32">NoteMaster</a>
+    <nav class="foot-links" aria-label="Footer">
+      <a href="privacy.html" data-tr="Gizlilik Politikası" data-en="Privacy Policy">Gizlilik Politikası</a>
+      <a href="terms.html" data-tr="Kullanım Koşulları" data-en="Terms of Service">Kullanım Koşulları</a>
+      <a href="mailto:fcodetr@gmail.com" data-tr="İletişim" data-en="Contact">İletişim</a>
+    </nav>
+    <small>© <span data-year>2026</span> FcodeTR</small>
+  </div>
+</footer>
+
+<script src="assets/legal.js"></script>
 </body>
 </html>
