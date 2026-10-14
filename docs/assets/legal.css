@@ -34,7 +34,7 @@
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; scroll-padding-top: 96px; }
 body {
-  margin: 0; background: var(--bg); color: var(--text);
+  margin: 0; background: var(--bg); color: var(--text); overflow-x: clip;
   font-family: var(--sans); font-size: 17px; line-height: 1.7;
   -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
 }
@@ -100,7 +100,7 @@ em { font-family: var(--serif); font-style: italic; font-weight: 400; }
 .toc-mobile { display: none; }
 
 /* article */
-.doc { max-width: 720px; }
+.doc { max-width: 720px; min-width: 0; overflow-wrap: break-word; }
 .doc > section > p:first-child, .doc .intro {
   font-size: 19px; line-height: 1.65; color: var(--text); margin-top: 0;
 }
@@ -147,7 +147,9 @@ footer { border-top: 1px solid var(--line); padding: 40px 0 calc(36px + env(safe
 .rv.in { opacity: 1; transform: none; }
 
 @media (max-width: 900px) {
-  .layout { grid-template-columns: 1fr; gap: 0; }
+  /* minmax(0, …): a plain 1fr column would grow to the provider table's
+     min-width and make the whole page scroll sideways. */
+  .layout { grid-template-columns: minmax(0, 1fr); gap: 0; }
   .toc { display: none; }
   .toc-mobile {
     display: block; margin: 0 0 32px; border: 1px solid var(--line); border-radius: 16px; background: var(--surface);
