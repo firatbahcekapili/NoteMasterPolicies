@@ -5,12 +5,14 @@
 // for app verification; forward the callback to the Supabase function with
 // the query string (code, state, error) intact.
 const GOOGLE_AUTH_FUNCTION = 'https://mwqlisyiczrqhuiacdfj.supabase.co/functions/v1/google-auth';
+// The redirect URI registered with Google is on the app's domain only.
+const GOOGLE_CALLBACK_HOST = 'notemaster.fcodetr.com';
 
 export default {
     async fetch(request, env) {
         const url = new URL(request.url);
 
-        if (url.pathname === '/google/callback' || url.pathname === '/google/callback/') {
+        if (url.hostname === GOOGLE_CALLBACK_HOST && (url.pathname === '/google/callback' || url.pathname === '/google/callback/')) {
             return Response.redirect(GOOGLE_AUTH_FUNCTION + url.search, 302);
         }
 
