@@ -157,6 +157,8 @@ h3 { font-size: 21px; line-height: 1.25; letter-spacing: -0.015em; }
 .store small { display: block; font-size: 11px; font-weight: 500; opacity: .7; letter-spacing: .01em; line-height: 1.1; }
 .store b { display: block; font-size: 17px; font-weight: 600; line-height: 1.15; letter-spacing: -0.01em; }
 .store svg { width: 22px; height: 22px; flex: none; }
+/* Not published yet: shown but inert (no link, not focusable). */
+.store.soon, .store.soon:hover { border-style: dashed; border-color: var(--line-strong); color: var(--text-soft); cursor: default; transform: none; box-shadow: none; }
 
 /* ─── Hero ───────────────────────────────────────────────────────────── */
 .hero { position: relative; padding: 148px 0 72px; overflow: hidden; }
@@ -219,69 +221,215 @@ h3 { font-size: 21px; line-height: 1.25; letter-spacing: -0.015em; }
 }
 .screen {
   position: relative; width: 100%; height: 100%; border-radius: 42px; overflow: hidden;
-  background: var(--bg); color: var(--text); font-size: 12px; line-height: 1.35;
+  font-size: 12px; line-height: 1.35;
+}
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 12px; }
+.row { display: flex; align-items: center; gap: 9px; }
+
+/* ─── App screens ─────────────────────────────────────────────────────
+   Mockups of the real app UI. Tokens mirror constants/theme.ts (light/dark);
+   each screen is laid out at the real 390pt phone width and scaled to fit. */
+.screen {
+  --a-bg: #F6F5F2; --a-card: #FFFFFF; --a-card2: #EFEDE9; --a-p: #141413; --a-onp: #FFFFFF;
+  --a-text: #111110; --a-t2: #55534E; --a-t3: #6B6862; --a-bd: #E2DFD9;
+  --a-err: #C4321F; --a-errbg: rgba(196,50,31,.08); --a-ok: #2E8049; --a-onsem: #FFFFFF;
+  --a-wbg: #EFEDE9; --a-wbd: #E2DFD9; --a-w2bg: #F6F5F2; --a-w2bd: #EAE8E3;
+  --a-sh: rgba(28,25,23,.10);
+  background: var(--a-bg); color: var(--a-text);
+}
+@media (prefers-color-scheme: dark) {
+  .screen {
+    --a-bg: #0A0A0B; --a-card: #161618; --a-card2: #222226; --a-p: #F4F3F1; --a-onp: #0A0A0B;
+    --a-text: #F5F4F2; --a-t2: #B3B1AB; --a-t3: #8F8D87; --a-bd: #2C2C31;
+    --a-err: #F07A6E; --a-errbg: rgba(240,122,110,.15); --a-ok: #5FBF85; --a-onsem: #0A0A0B;
+    --a-wbg: #1C1C1F; --a-wbd: #2C2C31; --a-w2bg: #0F0F11; --a-w2bd: #222226;
+    --a-sh: rgba(0,0,0,.5);
+  }
 }
 .view {
-  position: absolute; inset: 0; padding: 54px 16px 16px; display: flex; flex-direction: column; gap: 10px;
+  position: absolute; inset: 0;
   opacity: 0; transform: translateY(14px) scale(.985);
   transition: opacity .6s var(--ease), transform .6s var(--ease);
 }
 .view.on { opacity: 1; transform: none; }
-.sb { position: absolute; top: 18px; left: 28px; right: 28px; display: flex; justify-content: space-between; font-size: 12px; font-weight: 600; }
-.app-head { display: flex; align-items: center; justify-content: space-between; }
-.app-head .ttl { font-size: 20px; font-weight: 600; letter-spacing: -0.02em; }
-.app-head .ttl em { font-size: 1.05em; }
-.app-head .avatar { width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--line-strong); display: grid; place-items: center; font-family: var(--serif); font-style: italic; font-size: 14px; }
-.muted { color: var(--text-faint); font-size: 11px; }
-.card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 12px; }
-.row { display: flex; align-items: center; gap: 9px; }
-.chk { width: 15px; height: 15px; border-radius: 50%; border: 1.2px solid var(--line-strong); flex: none; display: grid; place-items: center; }
-.chk.done { background: var(--text); border-color: var(--text); }
-.chk.done::after { content: ""; width: 6px; height: 3.5px; border: solid var(--bg); border-width: 0 0 1.6px 1.6px; transform: rotate(-45deg) translate(1px, -1px); }
-.done-t { color: var(--text-faint); text-decoration: line-through; }
-.pill { display: inline-flex; align-items: center; gap: 5px; height: 22px; padding: 0 9px; border-radius: 11px; font-size: 10.5px; font-weight: 600; border: 1px solid var(--line); background: var(--surface); }
-.pill.on { background: var(--text); color: var(--bg); border-color: var(--text); }
-.dot { width: 6px; height: 6px; border-radius: 50%; flex: none; }
-.line { height: 6px; border-radius: 3px; background: var(--surface-2); }
-.tabbar {
-  margin-top: auto; height: 48px; border-radius: 24px; background: var(--surface); border: 1px solid var(--line);
-  display: flex; align-items: center; justify-content: space-around; padding: 0 6px;
+.sb { position: absolute; top: 18px; left: 28px; right: 28px; display: flex; justify-content: space-between; font-size: 12px; font-weight: 600; z-index: 4; }
+.app {
+  position: absolute; left: 0; top: 0; width: 390px; height: 839px; overflow: hidden;
+  transform: scale(.7128); transform-origin: 0 0; padding-top: 56px;
+  font-size: 14px; line-height: 1.3; letter-spacing: 0; text-align: left;
 }
-.tabbar i { width: 18px; height: 18px; border-radius: 6px; border: 1.5px solid var(--text-faint); opacity: .7; }
-.tabbar i.on { border-color: var(--accent); background: var(--accent-soft); opacity: 1; }
-.ring { width: 54px; height: 54px; flex: none; }
-.ring circle { fill: none; stroke-width: 5; }
-.ring .bg { stroke: var(--surface-2); }
-.ring .fg { stroke: var(--accent); stroke-linecap: round; stroke-dasharray: 138; stroke-dashoffset: 138; transition: stroke-dashoffset 1.6s var(--ease) .3s; }
-.on .ring .fg, .ring.static .fg { stroke-dashoffset: 38; }
-.typing { height: 6px; border-radius: 3px; background: var(--text-soft); opacity: .55; width: 0; }
-.view.on .typing { animation: type 4.8s var(--ease) infinite; }
-.view.on .typing:nth-child(2) { animation-delay: .5s; }
-.view.on .typing:nth-child(3) { animation-delay: 1s; }
-.view.on .typing:nth-child(4) { animation-delay: 1.5s; }
-@keyframes type { 0% { width: 0; } 25%, 80% { width: var(--w, 90%); } 95%, 100% { width: 0; } }
-.week { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; }
-.week div { padding: 6px 0; border-radius: 10px; font-size: 10px; color: var(--text-soft); }
-.week b { display: block; font-size: 13px; color: var(--text); font-weight: 600; }
-.week .today { background: var(--text); color: var(--bg); }
-.week .today b { color: var(--bg); }
-.event { border-left: 3px solid var(--c, var(--accent)); padding: 8px 10px; border-radius: 10px; background: var(--surface); border-top: 1px solid var(--line); border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
-.canvas-paper {
-  flex: 1; border-radius: 16px; border: 1px solid var(--line);
-  background-color: var(--surface);
-  background-image: linear-gradient(var(--line) 1px, transparent 1px);
-  background-size: 100% 26px; background-position: 0 14px;
-  position: relative; overflow: hidden;
-}
-.ink path { fill: none; stroke: var(--text); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 600; stroke-dashoffset: 600; }
-.ink .hl { stroke: var(--sand); stroke-width: 10; opacity: .35; }
-.view.on .ink path { animation: draw 5.5s var(--ease) infinite; }
-.view.on .ink path:nth-child(2) { animation-delay: .8s; }
-.view.on .ink path:nth-child(3) { animation-delay: 1.6s; }
+.i { width: 1em; height: 1em; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex: none; display: block; }
+.i12 { font-size: 12px; } .i13 { font-size: 13px; } .i14 { font-size: 14px; } .i15 { font-size: 15px; } .i16 { font-size: 16px; }
+.i17 { font-size: 17px; } .i18 { font-size: 18px; } .i20 { font-size: 20px; } .i22 { font-size: 22px; } .i24 { font-size: 24px; } .i26 { font-size: 26px; }
+.a-row { display: flex; align-items: center; gap: 6px; }
+/* AppHeader */
+.a-hdr { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px 10px; }
+.a-logo { display: flex; align-items: center; gap: 10px; }
+.a-logo img { width: 36px; height: 36px; border-radius: 10px; }
+.a-brand { font-size: 16px; font-weight: 700; line-height: 20px; }
+.a-sub { font-size: 11px; font-weight: 500; color: var(--a-t2); }
+.a-acts { display: flex; gap: 8px; }
+.a-rb { width: 32px; height: 32px; border-radius: 50%; border: 1.5px solid var(--a-bd); background: var(--a-card); display: grid; place-items: center; }
+.a-rb.ai { border-width: 1px; background: var(--a-wbg); border-color: var(--a-wbd); }
+/* CustomTabBar */
+.a-tabs { position: absolute; left: 0; right: 0; bottom: 0; padding-bottom: 16px; display: flex; justify-content: center; z-index: 3; }
+.a-bar { display: flex; width: 92%; height: 70px; border-radius: 40px; padding: 0 10px; background: var(--a-card); box-shadow: 0 10px 20px var(--a-sh); }
+.a-tab { flex: 1; position: relative; display: flex; align-items: center; justify-content: center; color: var(--a-t2); }
+.a-tab .tc { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 11px; font-weight: 500; }
+.a-tab.on .tc { opacity: 0; }
+.a-bub { position: absolute; left: 50%; top: -20px; width: 64px; height: 64px; margin-left: -32px; border-radius: 50%; background: var(--a-p); color: var(--a-onp); display: grid; place-items: center; box-shadow: 0 4px 8px var(--a-sh); }
+.a-aifab { position: absolute; right: 20px; bottom: 104px; width: 56px; height: 56px; border-radius: 50%; background: var(--a-p); color: var(--a-onp); display: grid; place-items: center; box-shadow: 0 4px 10px var(--a-sh); z-index: 2; }
+.a-aifab .sp { position: absolute; top: 9px; left: 9px; }
+/* Home */
+.a-h3 { font-size: 20px; font-weight: 700; line-height: 28px; padding: 0 16px; margin-bottom: 12px; }
+.a-hcal { display: flex; gap: 8px; padding: 0 16px; margin-bottom: 16px; overflow: hidden; }
+.a-day { flex: none; width: 60px; height: 80px; border-radius: 20px; background: var(--a-card); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; }
+.a-day small { font-size: 12px; font-weight: 500; color: var(--a-t2); line-height: 16px; }
+.a-day b { font-size: 20px; font-weight: 700; line-height: 28px; }
+.a-day.sel { background: var(--a-p); color: var(--a-onp); }
+.a-day.sel small { color: var(--a-onp); }
+.a-dots { display: flex; gap: 2px; height: 6px; margin-top: 4px; }
+.a-dots i { width: 6px; height: 6px; border-radius: 50%; }
+.a-sec { padding: 0 16px; }
+.a-adv { display: flex; align-items: center; border-radius: 16px; padding: 14px; border: 1px solid var(--a-wbd); background: var(--a-wbg); margin-bottom: 16px; }
+.a-advI { width: 36px; height: 36px; border-radius: 12px; background: var(--a-p); color: var(--a-onp); display: grid; place-items: center; margin-right: 12px; flex: none; box-shadow: 0 4px 8px var(--a-sh); }
+.a-advT { font-size: 14px; font-weight: 600; }
+.a-pdot { width: 6px; height: 6px; border-radius: 50%; background: var(--a-p); }
+.a-advS { font-size: 12px; color: var(--a-t2); margin-top: 2px; }
+.a-tw { background: var(--a-card); border: 1px solid var(--a-bd); border-radius: 24px; padding: 16px; margin-bottom: 16px; box-shadow: 0 1px 3px var(--a-sh); }
+.a-twh { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.a-twt { font-size: 16px; font-weight: 700; }
+.a-big { width: 10px; height: 10px; border-radius: 50%; background: var(--a-p); }
+.a-tog { width: 28px; height: 28px; border-radius: 50%; background: var(--a-bd); color: var(--a-t2); display: grid; place-items: center; }
+.a-prog { display: flex; align-items: center; justify-content: space-between; border-radius: 16px; padding: 12px; border: 1px solid var(--a-w2bd); background: var(--a-w2bg); }
+.a-progT { font-size: 14px; font-weight: 600; }
+.a-progS { font-size: 11px; color: var(--a-t2); margin-top: 4px; line-height: 16px; }
+.a-ring { position: relative; width: 56px; height: 56px; flex: none; display: grid; place-items: center; }
+.a-ring svg { position: absolute; inset: 0; width: 56px; height: 56px; }
+.a-ring circle { fill: none; stroke-width: 5; }
+.a-ring .bg { stroke: var(--a-bd); }
+.a-ring .fg { stroke: var(--a-p); stroke-linecap: round; stroke-dasharray: 148; stroke-dashoffset: 148; transition: stroke-dashoffset 1.6s var(--ease) .3s; }
+.on .a-ring .fg, .a-ring.static .fg { stroke-dashoffset: 74; }
+.a-ring b { font-size: 13px; font-weight: 700; }
+.a-tl { margin-top: 8px; }
+.a-ti { display: flex; align-items: center; justify-content: space-between; border-radius: 12px; padding: 10px; border: 1px solid var(--a-w2bd); background: var(--a-w2bg); margin-bottom: 8px; gap: 10px; }
+.a-ti .l { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; font-size: 13px; font-weight: 500; }
+.a-ti .l span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.a-ck { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--a-p); flex: none; }
+.a-ck.d { border: 0; background: var(--a-wbg); color: var(--a-p); display: grid; place-items: center; }
+.a-ti .dn { text-decoration: line-through; color: var(--a-t3); }
+.a-tm { padding: 4px 8px; border-radius: 12px; border: 1px solid var(--a-wbd); background: var(--a-wbg); font-size: 10px; font-weight: 600; flex: none; }
+.a-qh { display: flex; align-items: center; justify-content: space-between; padding: 0 4px; margin-bottom: 10px; }
+.a-qh b { font-size: 16px; font-weight: 700; } .a-qh span { font-size: 12px; font-weight: 600; }
+.a-qg { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px 0; }
+.a-qp { width: 48%; border-radius: 16px; padding: 12px; border: 1px solid var(--a-bd); background: var(--a-card); display: flex; align-items: center; gap: 10px; box-shadow: 0 1px 3px var(--a-sh); }
+.a-qi { width: 36px; height: 36px; border-radius: 12px; border: 1px solid var(--a-wbd); background: var(--a-wbg); display: grid; place-items: center; flex: none; }
+.a-qp .t { font-size: 13px; font-weight: 600; }
+.a-qp .s { font-size: 10px; color: var(--a-t2); margin-top: 2px; }
+.a-qp .n { font-size: 9px; font-weight: 700; padding: 2px 4px; border-radius: 4px; background: var(--a-wbd); }
+.a-qp .c { font-size: 10px; color: var(--a-t3); margin-left: auto; }
+/* Notes */
+.a-srow { display: flex; align-items: center; gap: 10px; padding: 0 16px; margin: 4px 0; }
+.a-search { flex: 1; height: 44px; border-radius: 12px; background: var(--a-card); display: flex; align-items: center; gap: 8px; padding: 0 12px; font-size: 16px; color: var(--a-t2); }
+.a-sq { width: 44px; height: 44px; border-radius: 20px; border: 1px solid var(--a-bd); background: var(--a-card); display: grid; place-items: center; }
+.a-sq.v { background: var(--a-errbg); color: var(--a-err); }
+.a-chips { display: flex; gap: 8px; padding: 0 16px; margin: 12px 0; overflow: hidden; }
+.a-chip { flex: none; padding: 4px 12px; border-radius: 9999px; border: 1px solid var(--a-bd); background: var(--a-card); font-size: 14px; line-height: 20px; color: var(--a-t2); }
+.a-chip.sel { background: var(--a-ok); border-color: var(--a-ok); color: var(--a-onsem); font-weight: 600; }
+.a-list { padding: 0 16px; }
+.a-grp { font-size: 14px; font-weight: 700; color: var(--a-t2); padding: 4px 0; margin: 8px 0 4px; }
+.a-note { position: relative; overflow: hidden; border-radius: 16px; padding: 16px 16px 16px 22px; margin-bottom: 12px; border: 1px solid var(--a-bd); background: var(--a-card); box-shadow: 0 2px 8px rgba(28,25,23,.04); }
+.a-note.pin { border-color: color-mix(in srgb, var(--a-p) 21%, transparent); }
+.a-note .bar { position: absolute; left: 0; top: 0; bottom: 0; width: 5px; background: var(--c); }
+.a-nh { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 8px; }
+.a-nm { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 6px; }
+.a-tag { padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 600; background: color-mix(in srgb, var(--c) 14%, transparent); color: color-mix(in srgb, var(--c) 72%, var(--a-text)); }
+.a-tm2 { display: flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 500; color: var(--a-t3); }
+.a-nt { font-size: 16px; font-weight: 700; }
+.a-na { display: flex; align-items: center; gap: 4px; color: var(--a-t3); flex: none; }
+.a-na > span { padding: 6px; border-radius: 8px; display: grid; place-items: center; }
+.a-na > .pn { background: color-mix(in srgb, var(--a-p) 9%, transparent); color: var(--a-p); }
+.a-pv { font-size: 14px; line-height: 22px; color: var(--a-t2); margin-bottom: 10px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.a-au { display: inline-flex; align-items: center; gap: 6px; padding: 8px; border-radius: 8px; border: 1px solid color-mix(in srgb, var(--a-p) 19%, transparent); background: var(--a-card2); color: var(--a-p); font-size: 12px; font-weight: 600; margin-bottom: 10px; }
+.a-nf { display: flex; align-items: center; justify-content: space-between; font-size: 12px; }
+.a-nf .sy { display: flex; align-items: center; gap: 4px; color: var(--a-p); }
+.a-nf .dt { color: var(--a-t3); }
+/* Note editor */
+.a-eh { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; border-bottom: 1px solid var(--a-bd); }
+.a-eh .l { display: flex; align-items: center; gap: 10px; }
+.a-eh .l b { font-size: 18px; font-weight: 700; }
+.a-eh .r { display: flex; align-items: center; gap: 4px; color: var(--a-t2); }
+.a-eh .r > span { width: 34px; height: 34px; display: grid; place-items: center; }
+.a-eh .r > em { font-style: normal; color: var(--a-p); font-size: 16px; font-weight: 700; padding-left: 6px; }
+.a-ec { padding: 16px; display: grid; gap: 12px; }
+.a-ecard { background: var(--a-card); border: 1px solid var(--a-bd); border-radius: 20px; padding: 16px; }
+.a-lbl { font-size: 11px; font-weight: 700; letter-spacing: .6px; color: var(--a-t2); margin-bottom: 8px; }
+.a-et { font-size: 18px; font-weight: 700; padding: 4px 0; }
+.a-cr { display: flex; gap: 12px; overflow: hidden; margin-top: 4px; }
+.a-cc { width: 34px; height: 34px; border-radius: 50%; flex: none; display: grid; place-items: center; color: #fff; }
+.a-cc.s { border: 2px solid #fff; box-shadow: 0 2px 4px rgba(0,0,0,.3); }
+.a-ct { font-size: 16px; line-height: 24px; }
+.a-ct p { margin: 0; animation: atype 6s var(--ease) infinite; }
+.a-ct p:nth-child(2) { animation-delay: .5s; } .a-ct p:nth-child(3) { animation-delay: 1s; } .a-ct p:nth-child(4) { animation-delay: 1.5s; }
+@keyframes atype { 0% { clip-path: inset(0 100% 0 0); } 25%, 80% { clip-path: inset(0 0 0 0); } 95%, 100% { clip-path: inset(0 100% 0 0); } }
+.a-aib { border-radius: 16px; padding: 12px; margin-top: 12px; border: 1px solid var(--a-wbd); background: var(--a-wbg); display: grid; gap: 8px; }
+.a-aih { display: flex; align-items: center; justify-content: space-between; }
+.a-aih b { font-size: 14px; font-weight: 600; }
+.a-aibg { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 8px; background: color-mix(in srgb, var(--a-p) 12%, transparent); color: var(--a-p); }
+.a-pills { display: flex; flex-wrap: wrap; gap: 8px; }
+.a-pill { display: inline-flex; align-items: center; gap: 4px; padding: 6px 10px; border-radius: 14px; border: 1px solid var(--a-bd); background: var(--a-card); font-size: 12px; font-weight: 600; }
+.a-pill .i { color: var(--a-p); }
+.a-pill.p { background: color-mix(in srgb, var(--a-p) 9%, transparent); border-color: var(--a-p); color: var(--a-p); font-weight: 700; }
+/* Calendar */
+.a-ut { display: flex; align-items: center; justify-content: space-between; padding: 0 16px; margin-bottom: 12px; }
+.a-ut .l { display: flex; align-items: center; gap: 10px; }
+.a-ut .l b { font-size: 20px; font-weight: 700; }
+.a-sy { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--a-t2); }
+.a-sy i { width: 8px; height: 8px; border-radius: 50%; background: var(--a-ok); }
+.a-ut .r { display: flex; gap: 8px; }
+.a-ub { width: 36px; height: 36px; border-radius: 12px; background: var(--a-card2); color: var(--a-t2); display: grid; place-items: center; }
+.a-seg { display: flex; margin: 0 16px 12px; padding: 4px; border-radius: 14px; background: var(--a-card2); }
+.a-seg div { flex: 1; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--a-t2); }
+.a-seg .on { background: var(--a-p); color: var(--a-onp); }
+.a-mh { display: flex; align-items: center; justify-content: space-between; padding: 0 20px; height: 32px; font-size: 16px; font-weight: 600; }
+.a-mh .i { color: var(--a-t2); }
+.a-mgrid { display: grid; grid-template-columns: repeat(7, 1fr); padding: 0 12px; margin-bottom: 8px; text-align: center; }
+.a-wd { height: 24px; line-height: 24px; font-size: 12px; color: var(--a-t2); }
+.a-d { height: 38px; display: flex; flex-direction: column; align-items: center; font-size: 15px; }
+.a-d span { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; }
+.a-d.td span { font-weight: 700; }
+.a-d.sel span { background: var(--a-p); color: var(--a-onp); }
+.a-d .a-dots { height: 4px; margin-top: 2px; } .a-d .a-dots i { width: 4px; height: 4px; }
+.a-ev { border-radius: 16px; padding: 16px; margin-bottom: 12px; border: 1px solid var(--a-bd); background: var(--a-card); box-shadow: 0 2px 6px rgba(28,25,23,.04); }
+.a-evh { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.a-evt { display: flex; align-items: center; gap: 8px; }
+.a-evtime { display: flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 8px; font-size: 12px; font-weight: 600; color: color-mix(in srgb, var(--c) 72%, var(--a-text)); background: color-mix(in srgb, var(--c) 9%, transparent); }
+.a-evcat { padding: 4px 10px; border-radius: 8px; font-size: 12px; font-weight: 500; background: var(--a-card2); color: var(--a-t2); }
+.a-evh .r { display: flex; gap: 8px; color: var(--a-t2); }
+.a-evtitle { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+.a-evd { font-size: 13px; line-height: 18px; color: var(--a-t2); margin-bottom: 12px; }
+.a-evf { display: flex; align-items: center; gap: 4px; padding-top: 12px; border-top: 1px solid var(--a-bd); font-size: 13px; color: var(--a-t2); }
+.a-fab { position: absolute; right: 16px; bottom: 100px; width: 56px; height: 56px; border-radius: 50%; background: var(--a-p); color: var(--a-onp); display: grid; place-items: center; box-shadow: 0 4px 8px var(--a-sh); z-index: 2; }
+/* Drawing */
+.a-dt { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; }
+.a-dt .g { display: flex; gap: 8px; }
+.a-db { width: 38px; height: 38px; border-radius: 50%; background: var(--a-card2); color: var(--a-text); display: grid; place-items: center; }
+.a-db.p { background: var(--a-p); color: var(--a-onp); }
+.a-paper { position: absolute; left: 12px; right: 12px; top: 112px; bottom: 112px; border-radius: 16px; border: 1px solid var(--a-bd); background-color: var(--a-card); background-image: linear-gradient(var(--a-bd) 1px, transparent 1px); background-size: 100% 30px; background-position: 0 22px; overflow: hidden; }
+.a-ink path { fill: none; stroke: var(--a-text); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 600; stroke-dashoffset: 600; }
+.a-ink .hl { stroke: #F59E0B; stroke-width: 10; opacity: .4; }
+.view.on .a-ink path { animation: draw 5.5s var(--ease) infinite; }
+.view.on .a-ink path:nth-child(2) { animation-delay: .8s; }
+.view.on .a-ink path:nth-child(3) { animation-delay: 1.6s; }
 @keyframes draw { 0% { stroke-dashoffset: 600; } 45%, 85% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 0; opacity: 0; } }
-.tools { display: flex; justify-content: center; gap: 8px; }
-.tools span { width: 26px; height: 26px; border-radius: 50%; border: 1px solid var(--line); background: var(--surface); }
-.tools span.sel { box-shadow: 0 0 0 2px var(--bg), 0 0 0 3.5px var(--text); }
+.a-tools { position: absolute; left: 0; right: 0; bottom: 16px; display: flex; justify-content: center; }
+.a-tb { display: flex; align-items: center; gap: 6px; padding: 8px 12px; border-radius: 32px; background: var(--a-card); border: 1px solid var(--a-bd); box-shadow: 0 10px 20px var(--a-sh); }
+.a-tb .ib { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; color: var(--a-t2); }
+.a-tb .ib.sel { background: var(--a-p); color: var(--a-onp); }
+.a-tb .sep { width: 1px; height: 24px; background: var(--a-bd); margin: 0 4px; }
+.a-tb .cd { width: 22px; height: 22px; border-radius: 50%; margin: 0 3px; }
+.a-tb .cd.sel { box-shadow: 0 0 0 2px var(--a-card), 0 0 0 4px var(--a-text); }
+
 
 /* ─── Sections ───────────────────────────────────────────────────────── */
 section { position: relative; }
@@ -470,12 +618,13 @@ footer { border-top: 1px solid var(--line); padding: 48px 0 calc(40px + env(safe
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
   .rv, .split .w > span { opacity: 1; transform: none; }
-  .view.on .typing { width: var(--w, 90%); }
-  .ink path { stroke-dashoffset: 0; }
+  .a-ink path { stroke-dashoffset: 0; }
+  .a-ct p { clip-path: none; }
 }
 </style>
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol><symbol id="i-sparkles" viewBox="0 0 24 24"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/><path d="M20 3v4"/><path d="M22 5h-4"/><path d="M4 17v2"/><path d="M5 18H3"/></symbol><symbol id="i-user" viewBox="0 0 24 24"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol><symbol id="i-home" viewBox="0 0 24 24"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></symbol><symbol id="i-check-square" viewBox="0 0 24 24"><path d="m9 11 3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></symbol><symbol id="i-file-text" viewBox="0 0 24 24"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></symbol><symbol id="i-calendar" viewBox="0 0 24 24"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></symbol><symbol id="i-settings" viewBox="0 0 24 24"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></symbol><symbol id="i-chevron-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol><symbol id="i-chevron-left" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol><symbol id="i-chevron-right" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol><symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></symbol><symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/></symbol><symbol id="i-share-2" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/></symbol><symbol id="i-more" viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></symbol><symbol id="i-mic" viewBox="0 0 24 24"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></symbol><symbol id="i-template" viewBox="0 0 24 24"><rect width="18" height="7" x="3" y="3" rx="1"/><rect width="9" height="7" x="3" y="14" rx="1"/><rect width="5" height="7" x="16" y="14" rx="1"/></symbol><symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></symbol><symbol id="i-arrow-left" viewBox="0 0 24 24"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></symbol><symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol><symbol id="i-briefcase" viewBox="0 0 24 24"><path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/><rect width="20" height="14" x="2" y="6" rx="2"/></symbol><symbol id="i-bot" viewBox="0 0 24 24"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></symbol><symbol id="i-book" viewBox="0 0 24 24"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20"/></symbol><symbol id="i-map-pin" viewBox="0 0 24 24"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></symbol><symbol id="i-video" viewBox="0 0 24 24"><path d="m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5"/><rect x="2" y="6" width="14" height="12" rx="2"/></symbol><symbol id="i-plus" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5v14"/></symbol><symbol id="i-refresh" viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></symbol><symbol id="i-sliders" viewBox="0 0 24 24"><line x1="21" x2="14" y1="4" y2="4"/><line x1="10" x2="3" y1="4" y2="4"/><line x1="21" x2="12" y1="12" y2="12"/><line x1="8" x2="3" y1="12" y2="12"/><line x1="21" x2="16" y1="20" y2="20"/><line x1="12" x2="3" y1="20" y2="20"/><line x1="14" x2="14" y1="2" y2="6"/><line x1="8" x2="8" y1="10" y2="14"/><line x1="16" x2="16" y1="18" y2="22"/></symbol><symbol id="i-align-left" viewBox="0 0 24 24"><path d="M15 12H3"/><path d="M17 18H3"/><path d="M21 6H3"/></symbol><symbol id="i-grid" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M3 15h18"/><path d="M9 3v18"/><path d="M15 3v18"/></symbol><symbol id="i-undo" viewBox="0 0 24 24"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/></symbol><symbol id="i-redo" viewBox="0 0 24 24"><path d="M21 7v6h-6"/><path d="M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3l3 2.7"/></symbol><symbol id="i-pencil" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z"/></symbol><symbol id="i-highlighter" viewBox="0 0 24 24"><path d="m9 11-6 6v3h9l3-3"/><path d="m22 12-4.6 4.6a2 2 0 0 1-2.8 0l-5.2-5.2a2 2 0 0 1 0-2.8L14 4"/></symbol><symbol id="i-eraser" viewBox="0 0 24 24"><path d="m7 21-4.3-4.3c-1-1-1-2.5 0-3.4l9.6-9.6c1-1 2.5-1 3.4 0l5.6 5.6c1 1 1 2.5 0 3.4L13 21"/><path d="M22 21H7"/><path d="m5 11 9 9"/></symbol><symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></symbol><symbol id="i-sticky-note" viewBox="0 0 24 24"><path d="M16 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h9l7-7V5a2 2 0 0 0-2-2z"/><path d="M15 21v-6h6"/></symbol><symbol id="i-wand" viewBox="0 0 24 24"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72"/><path d="m14 7 3 3"/><path d="M5 6v4"/><path d="M19 14v4"/><path d="M10 2v2"/><path d="M7 8H3"/><path d="M21 16h-4"/><path d="M11 3H9"/></symbol></defs></svg>
 <div class="progress" aria-hidden="true"></div>
 
 <!-- ─── Nav ─────────────────────────────────────────────────────────── -->
@@ -506,19 +655,19 @@ footer { border-top: 1px solid var(--line); padding: 48px 0 calc(40px + env(safe
       <h1 class="split" data-i18n-html="hero.title">Aklınızdakileri <em>düzene</em> sokun.</h1>
       <p class="lead rv" style="--d:.35s" data-i18n="hero.lead">NoteMaster; notlarınızı, görevlerinizi ve takviminizi tek bir sade uygulamada toplar. Konuşarak not alın, yapay zekâya özetletin, zamanı gelince hatırlatalım.</p>
       <div class="cta rv" style="--d:.5s" id="download">
-        <a class="btn btn-primary store" href="https://apps.apple.com/app/id6823328342" target="_blank" rel="noopener">
+        <a class="btn btn-primary store" href="/app-store" target="_blank" rel="noopener">
           <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.37 12.62c-.02-2.35 1.92-3.48 2.01-3.54-1.1-1.6-2.8-1.82-3.4-1.84-1.45-.15-2.83.85-3.56.85-.74 0-1.87-.83-3.07-.81-1.58.02-3.04.92-3.85 2.33-1.64 2.85-.42 7.07 1.18 9.38.78 1.13 1.71 2.4 2.93 2.36 1.18-.05 1.62-.76 3.04-.76 1.42 0 1.82.76 3.06.74 1.27-.02 2.07-1.15 2.84-2.29.9-1.31 1.27-2.58 1.29-2.65-.03-.01-2.46-.95-2.47-3.77zM14.03 5.72c.65-.79 1.09-1.88.97-2.97-.94.04-2.07.62-2.74 1.41-.6.7-1.13 1.81-.99 2.88 1.04.08 2.11-.53 2.76-1.32z"/></svg>
           <span><small data-i18n="store.apple.small">İndirin</small><b>App Store</b></span>
         </a>
-        <a class="btn btn-ghost store" href="https://play.google.com/store/apps/details?id=com.fcodetr.notemaster" target="_blank" rel="noopener">
+        <div class="btn btn-ghost store soon" aria-disabled="true">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M3.6 2.3c-.2.2-.3.6-.3 1v17.4c0 .4.1.8.3 1l9.7-9.7L3.6 2.3zm10.8 10.8 2.6 2.6-11.3 6.5 8.7-9.1zm0-2.2L5.7 1.8 17 8.3l-2.6 2.6zm3.9-1.8 3 1.7c.9.5.9 1.9 0 2.4l-3 1.7-2.8-2.9 2.8-2.9z"/></svg>
-          <span><small data-i18n="store.google.small">Edinin</small><b>Google Play</b></span>
-        </a>
+          <span><small data-i18n="store.google.small">Yakında</small><b>Google Play</b></span>
+        </div>
       </div>
       <div class="hero-note rv" style="--d:.65s">
         <span data-i18n="hero.n1">Ücretsiz başlayın</span>
         <span data-i18n="hero.n2">Hesap olmadan deneyin</span>
-        <span data-i18n="hero.n3">iOS ve Android</span>
+        <span data-i18n="hero.n3">iOS'ta şimdi, Android yakında</span>
       </div>
     </div>
 
@@ -540,34 +689,47 @@ footer { border-top: 1px solid var(--line); padding: 48px 0 calc(40px + env(safe
       <div class="phone" id="heroPhone">
         <div class="screen">
           <div class="sb"><span>9:41</span><span>●●●</span></div>
-          <div class="view on">
-            <div class="app-head">
-              <div>
-                <div class="muted" data-i18n="ph.greeting">Günaydın, Fırat</div>
-                <div class="ttl" data-i18n-html="ph.today">Bugün <em>sakin</em></div>
+          <div class="view on"><div class="app">
+            <div data-hdr="home"></div>
+            <div class="a-h3" data-i18n="h.sum">Bugünün Özeti</div>
+            <div class="a-hcal"></div>
+            <div class="a-sec">
+              <div class="a-adv">
+                <div class="a-advI"><svg class="i i18" aria-hidden="true"><use href="#i-sparkles"/></svg></div>
+                <div>
+                  <div class="a-row"><span class="a-advT" data-i18n="h.advT">Günün Akıllı Tavsiyesi</span><i class="a-pdot"></i></div>
+                  <div class="a-advS" data-i18n="h.adv">Bugün tamamlaman gereken 2 adet yüksek öncelikli görevin var. Önce onlara odaklan!</div>
+                </div>
               </div>
-              <div class="avatar">F</div>
+              <div class="a-tw">
+                <div class="a-twh">
+                  <div class="a-row" style="gap:8px"><i class="a-big"></i><span class="a-twt" data-i18n="h.tasks">Bugünkü Görevler</span></div>
+                  <div class="a-tog"><svg class="i i18" aria-hidden="true"><use href="#i-chevron-down"/></svg></div>
+                </div>
+                <div class="a-prog">
+                  <div style="flex:1;padding-right:10px">
+                    <div class="a-row"><span class="a-progT" data-i18n="h.rate">Tamamlanma Oranı</span><svg class="i i14" aria-hidden="true"><use href="#i-sparkles"/></svg></div>
+                    <div class="a-progS" data-i18n="h.rateT">4 görevden 2 tanesi tamamlandı</div>
+                  </div>
+                  <div class="a-ring static"><svg viewBox="0 0 56 56"><circle class="bg" cx="28" cy="28" r="23.5"/><circle class="fg" cx="28" cy="28" r="23.5" transform="rotate(-90 28 28)"/></svg><b>50%</b></div>
+                </div>
+                <div class="a-tl">
+                  <div class="a-ti"><div class="l"><span class="a-ck d"><svg class="i i12" aria-hidden="true"><use href="#i-check"/></svg></span><span class="dn" data-i18n="h.t1">Sabah koşusu</span></div><span class="a-tm">07:30</span></div>
+                  <div class="a-ti"><div class="l"><span class="a-ck d"><svg class="i i12" aria-hidden="true"><use href="#i-check"/></svg></span><span class="dn" data-i18n="h.t2">E-postaları yanıtla</span></div></div>
+                  <div class="a-ti"><div class="l"><span class="a-ck"></span><span data-i18n="h.t3">Sunumu hazırla</span></div><span class="a-tm">14:00</span></div>
+                </div>
+              </div>
+              <div class="a-qh"><b data-i18n="h.qa">Hızlı İşlemler</b><span data-i18n="h.all">Tümünü Gör</span></div>
+              <div class="a-qg">
+                <div class="a-qp"><div class="a-qi"><svg class="i i20" aria-hidden="true"><use href="#i-sparkles"/></svg></div><div><div class="t"><span data-i18n="h.q1">Sesli Not &amp; AI</span></div><div class="s" data-i18n="h.q1d">Konuşarak hızlı not al</div></div></div>
+                <div class="a-qp"><div class="a-qi"><svg class="i i20" aria-hidden="true"><use href="#i-briefcase"/></svg></div><div><div class="t"><span data-i18n="h.q2">Yeni Görev</span></div><div class="s" data-i18n="h.q2d">Yeni yapılacak ekle</div></div></div>
+                <div class="a-qp"><div class="a-qi"><svg class="i i20" aria-hidden="true"><use href="#i-bot"/></svg></div><div><div class="a-row"><span class="t" data-i18n="h.q3">AI Asistan</span><span class="n" data-i18n="h.new">Yeni</span></div><div class="s" data-i18n="h.q3d">Soru sor &amp; komut ver</div></div></div>
+                <div class="a-qp"><div class="a-qi"><svg class="i i20" aria-hidden="true"><use href="#i-book"/></svg></div><div style="flex:1"><div class="a-row" style="justify-content:space-between"><span class="t" data-i18n="h.q4">Tüm Notlar</span><span class="c" data-i18n="h.q4c">12 Not</span></div><div class="s" data-i18n="h.q4d">Tüm notlarını incele</div></div></div>
+              </div>
             </div>
-            <div class="card row" style="gap:14px">
-              <svg class="ring static" viewBox="0 0 54 54"><circle class="bg" cx="27" cy="27" r="22"/><circle class="fg" cx="27" cy="27" r="22" transform="rotate(-90 27 27)"/></svg>
-              <div><div style="font-weight:600;font-size:13px" data-i18n="ph.progress">3 / 4 görev tamam</div><div class="muted" data-i18n="ph.progressS">Harika gidiyorsunuz</div></div>
-            </div>
-            <div class="card" style="display:grid;gap:9px">
-              <div class="row"><span class="chk done"></span><span class="done-t" data-i18n="ph.t1">Sabah koşusu</span></div>
-              <div class="row"><span class="chk done"></span><span class="done-t" data-i18n="ph.t2">E-postaları yanıtla</span></div>
-              <div class="row"><span class="chk"></span><span data-i18n="ph.t3">Sunumu hazırla</span><span class="muted" style="margin-left:auto">14:00</span></div>
-            </div>
-            <div class="muted" style="margin-top:2px" data-i18n="ph.recent">Son notlar</div>
-            <div class="card" style="display:grid;gap:6px">
-              <div class="row"><span class="dot" style="background:var(--sage)"></span><b style="font-weight:600" data-i18n="ph.n1">Hafta sonu kamp planı</b></div>
-              <div class="line" style="width:90%"></div><div class="line" style="width:64%"></div>
-            </div>
-            <div class="card" style="display:grid;gap:6px">
-              <div class="row"><span class="dot" style="background:var(--slate)"></span><b style="font-weight:600" data-i18n="ph.n2">Sprint toplantısı</b></div>
-              <div class="line" style="width:80%"></div>
-            </div>
-            <div class="tabbar"><i></i><i></i><i class="on"></i><i></i><i></i></div>
-          </div>
+            <div class="a-aifab"><svg class="i i26" aria-hidden="true"><use href="#i-bot"/></svg><span class="sp"><svg class="i i12" aria-hidden="true"><use href="#i-sparkles"/></svg></span></div>
+            <div data-tabs="home"></div>
+          </div></div>
         </div>
       </div>
     </div>
@@ -791,6 +953,7 @@ footer { border-top: 1px solid var(--line); padding: 48px 0 calc(40px + env(safe
       <details class="rv"><summary data-i18n="faq.q3">Verilerim cihazlarım arasında senkronize olur mu?</summary><div class="ans" data-i18n="faq.a3">Hesapla giriş yaptığınızda notlarınız, görevleriniz ve etkinlikleriniz tüm cihazlarınızda güncel kalır.</div></details>
       <details class="rv"><summary data-i18n="faq.q4">Google Takvim ile çalışıyor mu?</summary><div class="ans" data-i18n="faq.a4">Evet. Bir veya birden fazla Google Takvim'i bağlayabilirsiniz; etkinlikler iki yönlü senkronize olur.</div></details>
       <details class="rv"><summary data-i18n="faq.q5">Hesabımı nasıl silerim?</summary><div class="ans" data-i18n="faq.a5">Uygulamada Ayarlar → Profil → Hesabı sil adımlarıyla hesabınızı ve tüm verilerinizi kalıcı olarak silebilirsiniz.</div></details>
+      <details class="rv"><summary data-i18n="faq.q6">NoteMaster Android'de var mı?</summary><div class="ans" data-i18n="faq.a6">Android sürümü yolda ve Google Play'e henüz yüklenmedi. Şimdilik iOS'ta App Store'dan indirebilirsiniz; Android yayınlandığında burada duyuracağız.</div></details>
     </div>
   </div>
 </section>
@@ -803,14 +966,14 @@ footer { border-top: 1px solid var(--line); padding: 48px 0 calc(40px + env(safe
     <h2 class="split" data-i18n-html="fin.title">Daha az dağınıklık, daha çok <em>odak</em>.</h2>
     <p class="lead rv center" data-i18n="fin.lead">NoteMaster'ı indirin, ilk notunuzu bir dakikadan kısa sürede alın.</p>
     <div class="cta rv">
-      <a class="btn btn-primary store" href="https://apps.apple.com/app/id6823328342" target="_blank" rel="noopener">
+      <a class="btn btn-primary store" href="/app-store" target="_blank" rel="noopener">
         <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.37 12.62c-.02-2.35 1.92-3.48 2.01-3.54-1.1-1.6-2.8-1.82-3.4-1.84-1.45-.15-2.83.85-3.56.85-.74 0-1.87-.83-3.07-.81-1.58.02-3.04.92-3.85 2.33-1.64 2.85-.42 7.07 1.18 9.38.78 1.13 1.71 2.4 2.93 2.36 1.18-.05 1.62-.76 3.04-.76 1.42 0 1.82.76 3.06.74 1.27-.02 2.07-1.15 2.84-2.29.9-1.31 1.27-2.58 1.29-2.65-.03-.01-2.46-.95-2.47-3.77zM14.03 5.72c.65-.79 1.09-1.88.97-2.97-.94.04-2.07.62-2.74 1.41-.6.7-1.13 1.81-.99 2.88 1.04.08 2.11-.53 2.76-1.32z"/></svg>
         <span><small data-i18n="store.apple.small">İndirin</small><b>App Store</b></span>
       </a>
-      <a class="btn btn-ghost store" href="https://play.google.com/store/apps/details?id=com.fcodetr.notemaster" target="_blank" rel="noopener">
+      <div class="btn btn-ghost store soon" aria-disabled="true">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M3.6 2.3c-.2.2-.3.6-.3 1v17.4c0 .4.1.8.3 1l9.7-9.7L3.6 2.3zm10.8 10.8 2.6 2.6-11.3 6.5 8.7-9.1zm0-2.2L5.7 1.8 17 8.3l-2.6 2.6zm3.9-1.8 3 1.7c.9.5.9 1.9 0 2.4l-3 1.7-2.8-2.9 2.8-2.9z"/></svg>
-        <span><small data-i18n="store.google.small">Edinin</small><b>Google Play</b></span>
-      </a>
+        <span><small data-i18n="store.google.small">Yakında</small><b>Google Play</b></span>
+      </div>
     </div>
   </div>
 </section>
@@ -832,60 +995,129 @@ footer { border-top: 1px solid var(--line); padding: 48px 0 calc(40px + env(safe
 
 <!-- Screens shown in the sticky story phone (and inline on mobile). -->
 <template id="screens">
-  <div class="view" data-screen="0">
-    <div class="app-head"><div><div class="muted" data-i18n="sc0.k">Yeni not</div><div class="ttl" data-i18n="sc0.t">Toplantı notları</div></div><div class="avatar">F</div></div>
-    <div class="card" style="display:grid;gap:9px;padding:14px">
-      <div class="typing" style="--w:92%"></div><div class="typing" style="--w:78%"></div><div class="typing" style="--w:86%"></div><div class="typing" style="--w:48%"></div>
+  <div class="view" data-screen="0"><div class="app">
+    <div class="a-eh">
+      <div class="l"><svg class="i i22" aria-hidden="true"><use href="#i-arrow-left"/></svg><b data-i18n="ed.new">Yeni Not</b></div>
+      <div class="r"><span><svg class="i i18" aria-hidden="true"><use href="#i-bell"/></svg></span><span><svg class="i i18" aria-hidden="true"><use href="#i-share-2"/></svg></span><em data-i18n="ed.save">Kaydet</em></div>
     </div>
-    <div class="card row" style="gap:10px">
-      <span class="rec-dot"></span>
-      <span class="wave" style="height:18px"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
-      <span class="mono" style="margin-left:auto">0:14</span>
+    <div class="a-ec">
+      <div class="a-ecard">
+        <div class="a-lbl" data-i18n="ed.sTitle">NOT BAŞLIĞI</div>
+        <div class="a-et" data-i18n="ed.title">Toplantı notları</div>
+        <div class="a-lbl" style="margin-top:12px" data-i18n="ed.sColor">NOT RENGİ</div>
+        <div class="a-cr"><span class="a-cc" style="background:#EF4444"></span><span class="a-cc" style="background:#F43F5E"></span><span class="a-cc" style="background:#F59E0B"></span><span class="a-cc" style="background:#10B981"></span><span class="a-cc" style="background:#38BDF8"></span><span class="a-cc s" style="background:#6366F1"><svg class="i i16" aria-hidden="true"><use href="#i-check"/></svg></span><span class="a-cc" style="background:#A855F7"></span></div>
+      </div>
+      <div class="a-ecard">
+        <div class="a-lbl" data-i18n="ed.sContent">NOT İÇERİĞİ</div>
+        <div class="a-ct">
+          <p data-i18n="ed.l1">Lansman tarihi 12 Kasım</p>
+          <p data-i18n="ed.l2">Ayşe tasarımı cuma teslim edecek</p>
+          <p data-i18n="ed.l3">Test ortamı çarşamba hazır olacak</p>
+          <p data-i18n="ed.l4">Sunum dosyasını perşembe paylaş</p>
+        </div>
+        <div class="a-aib">
+          <div class="a-aih"><div class="a-row"><svg class="i i16" aria-hidden="true"><use href="#i-sparkles"/></svg><b data-i18n="ed.ai">AI Akıllı Not Asistanı</b></div><span class="a-aibg">AI</span></div>
+          <div class="a-pills">
+            <span class="a-pill"><svg class="i i13" aria-hidden="true"><use href="#i-sparkles"/></svg><span data-i18n="ed.grammar">Yazım &amp; Dilbilgisi</span></span>
+            <span class="a-pill"><svg class="i i13" aria-hidden="true"><use href="#i-file-text"/></svg><span data-i18n="ed.sum">Özet Çıkar</span></span>
+            <span class="a-pill p"><svg class="i i13" aria-hidden="true"><use href="#i-wand"/></svg><span data-i18n="ed.more">Gelişmiş AI Araçları</span></span>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="card" style="background:var(--accent-soft);border-color:transparent;display:grid;gap:6px">
-      <div style="font-weight:600;color:var(--accent);font-size:11px;letter-spacing:.08em;text-transform:uppercase" data-i18n="sc0.ai">Yapay zekâ özeti</div>
-      <div class="row"><span class="dot" style="background:var(--accent)"></span><span data-i18n="sc0.a1">Lansman tarihi 12 Kasım</span></div>
-      <div class="row"><span class="dot" style="background:var(--accent)"></span><span data-i18n="sc0.a2">Ayşe tasarımı cuma teslim edecek</span></div>
+  </div></div>
+  <div class="view" data-screen="1"><div class="app">
+    <div data-hdr="notes"></div>
+    <div class="a-srow">
+      <div class="a-search"><svg class="i i18" aria-hidden="true"><use href="#i-search"/></svg><span data-i18n="nt.search">Notlarda Ara</span></div>
+      <div class="a-sq" style="color:var(--a-p)"><svg class="i i18" aria-hidden="true"><use href="#i-template"/></svg></div>
+      <div class="a-sq v"><svg class="i i16" aria-hidden="true"><use href="#i-mic"/></svg></div>
     </div>
-    <div class="tabbar"><i></i><i class="on"></i><i></i><i></i><i></i></div>
-  </div>
-  <div class="view" data-screen="1">
-    <div class="app-head"><div class="ttl" data-i18n-html="sc1.t"><em>Notlar</em></div><div class="avatar">F</div></div>
-    <div class="card row" style="padding:9px 12px;border-radius:14px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><span class="muted" style="font-size:12px" data-i18n="sc1.s">toplantı</span></div>
-    <div class="row" style="flex-wrap:wrap;gap:6px"><span class="pill on" data-i18n="sc1.all">Tümü</span><span class="pill"><span class="dot" style="background:var(--slate)"></span><span data-i18n="sc1.work">İş</span></span><span class="pill"><span class="dot" style="background:var(--sage)"></span><span data-i18n="sc1.personal">Kişisel</span></span><span class="pill"><span class="dot" style="background:var(--sand)"></span><span data-i18n="sc1.ideas">Fikirler</span></span></div>
-    <div class="muted" data-i18n="sc1.today">Bugün</div>
-    <div class="card" style="display:grid;gap:6px"><div class="row"><span class="dot" style="background:var(--slate)"></span><b style="font-weight:600" data-i18n="sc1.n1">Sprint toplantısı</b></div><div class="line" style="width:88%"></div><div class="line" style="width:60%"></div></div>
-    <div class="card" style="display:grid;gap:6px"><div class="row"><span class="dot" style="background:var(--slate)"></span><b style="font-weight:600" data-i18n="sc1.n2">Müşteri toplantısı</b></div><div class="line" style="width:76%"></div></div>
-    <div class="muted" data-i18n="sc1.yday">Dün</div>
-    <div class="card" style="display:grid;gap:6px"><div class="row"><span class="dot" style="background:var(--sand)"></span><b style="font-weight:600" data-i18n="sc1.n3">Toplantı odası fikirleri</b></div><div class="line" style="width:82%"></div></div>
-    <div class="tabbar"><i></i><i class="on"></i><i></i><i></i><i></i></div>
-  </div>
-  <div class="view" data-screen="2">
-    <div class="app-head"><div class="ttl" data-i18n-html="sc2.t"><em>Takvim</em></div><div class="avatar">F</div></div>
-    <div class="week"></div>
-    <div class="event" style="--c:var(--accent)"><b style="font-weight:600" data-i18n="sc2.e1">Ekip toplantısı</b><div class="muted">10:00 – 11:00</div></div>
-    <div class="event" style="--c:var(--sage)"><b style="font-weight:600" data-i18n="sc2.e2">Öğle yemeği · Deniz</b><div class="muted">12:30</div></div>
-    <div class="card" style="display:grid;gap:9px">
-      <div class="row"><span class="chk done"></span><span class="done-t" data-i18n="sc2.t1">Raporu gönder</span></div>
-      <div class="row"><span class="chk"></span><span data-i18n="sc2.t2">Sunumu hazırla</span><span class="pill" style="margin-left:auto;height:18px;font-size:9.5px;color:var(--clay)" data-i18n="sc2.high">Yüksek</span></div>
+    <div class="a-chips">
+      <span class="a-chip sel" data-i18n="nt.all">Tümü</span><span class="a-chip" data-i18n="nt.work">İş</span><span class="a-chip" data-i18n="nt.personal">Kişisel</span><span class="a-chip" data-i18n="nt.ideas">Fikirler</span>
     </div>
-    <div class="card row" style="gap:10px">
-      <span style="width:28px;height:28px;border-radius:8px;border:1px solid var(--line);display:grid;place-items:center;color:var(--sand)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/></svg></span>
-      <div><b style="font-weight:600" data-i18n="sc2.r">Hatırlatıcı · 14:00</b><div class="muted" data-i18n="sc2.rs">Sunumu hazırla</div></div>
+    <div class="a-list">
+      <div class="a-grp" data-i18n="nt.today">Bugün</div>
+      <div class="a-note pin" style="--c:#6366F1"><span class="bar"></span>
+        <div class="a-nh"><div>
+          <div class="a-nm"><span class="a-tag">#<span data-i18n="nt.work">İş</span></span><span class="a-tm2"><svg class="i i13" aria-hidden="true"><use href="#i-clock"/></svg>10:42</span></div>
+          <div class="a-nt" data-i18n="nt.n1">Sprint toplantısı</div>
+        </div><div class="a-na"><span class="pn"><svg class="i i18" style="fill:currentColor" aria-hidden="true"><use href="#i-pin"/></svg></span><span><svg class="i i18" aria-hidden="true"><use href="#i-share-2"/></svg></span><span><svg class="i i18" aria-hidden="true"><use href="#i-more"/></svg></span></div></div>
+        <div class="a-pv" data-i18n="nt.p1">Lansman tarihi 12 Kasım. Ayşe tasarımı cuma teslim edecek. Test ortamı çarşamba hazır olacak; hata listesini toplantıdan önce paylaş.</div>
+        
+        <div class="a-nf"><span class="sy"><svg class="i i13" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="nt.sync">Eşitlendi</span></span><span class="dt" data-today></span></div>
+      </div>
+      <div class="a-note" style="--c:#10B981"><span class="bar"></span>
+        <div class="a-nh"><div>
+          <div class="a-nm"><span class="a-tag">#<span data-i18n="nt.personal">Kişisel</span></span><span class="a-tm2"><svg class="i i13" aria-hidden="true"><use href="#i-clock"/></svg>08:15</span></div>
+          <div class="a-nt" data-i18n="nt.n2">Hafta sonu kamp planı</div>
+        </div><div class="a-na"><span><svg class="i i18" aria-hidden="true"><use href="#i-pin"/></svg></span><span><svg class="i i18" aria-hidden="true"><use href="#i-share-2"/></svg></span><span><svg class="i i18" aria-hidden="true"><use href="#i-more"/></svg></span></div></div>
+        <div class="a-pv" data-i18n="nt.p2">Cuma akşamı yola çık. Çadır, uyku tulumu, ocak ve yedek pil. Cumartesi sabah gölün kuzey patikasında yürüyüş.</div>
+        <div class="a-au"><svg class="i i14" aria-hidden="true"><use href="#i-mic"/></svg><span>0:42</span></div>
+        <div class="a-nf"><span class="sy"><svg class="i i13" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="nt.sync">Eşitlendi</span></span><span class="dt" data-today></span></div>
+      </div>
+      <div class="a-grp" data-i18n="nt.yday">Dün</div>
+      <div class="a-note" style="--c:#F59E0B"><span class="bar"></span>
+        <div class="a-nh"><div>
+          <div class="a-nm"><span class="a-tag">#<span data-i18n="nt.ideas">Fikirler</span></span><span class="a-tm2"><svg class="i i13" aria-hidden="true"><use href="#i-clock"/></svg>17:20</span></div>
+          <div class="a-nt" data-i18n="nt.n3">Toplantı odası fikirleri</div>
+        </div><div class="a-na"><span><svg class="i i18" aria-hidden="true"><use href="#i-pin"/></svg></span><span><svg class="i i18" aria-hidden="true"><use href="#i-share-2"/></svg></span><span><svg class="i i18" aria-hidden="true"><use href="#i-more"/></svg></span></div></div>
+        <div class="a-pv" data-i18n="nt.p3">Beyaz tahta duvarı, ortak ekran için kablosuz sunum, sessiz çalışma köşesi.</div>
+        
+        <div class="a-nf"><span class="sy"><svg class="i i13" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="nt.sync">Eşitlendi</span></span><span class="dt" data-today></span></div>
+      </div>
     </div>
-    <div class="tabbar"><i></i><i></i><i></i><i class="on"></i><i></i></div>
-  </div>
-  <div class="view" data-screen="3">
-    <div class="app-head"><div class="ttl" data-i18n-html="sc3.t"><em>Çizim</em></div><div class="avatar">F</div></div>
-    <div class="canvas-paper">
-      <svg class="ink" viewBox="0 0 260 360" preserveAspectRatio="xMidYMin meet" style="width:100%;height:100%">
+    <div class="a-aifab"><svg class="i i26" aria-hidden="true"><use href="#i-bot"/></svg><span class="sp"><svg class="i i12" aria-hidden="true"><use href="#i-sparkles"/></svg></span></div>
+    <div data-tabs="notes"></div>
+  </div></div>
+  <div class="view" data-screen="2"><div class="app">
+    <div data-hdr="calendar"></div>
+    <div class="a-ut">
+      <div class="l"><b data-i18n="tab.calendar">Takvim</b><span class="a-sy"><i></i><span data-i18n="cal.google">Google Takvim</span></span></div>
+      <div class="r"><span class="a-ub"><svg class="i i18" aria-hidden="true"><use href="#i-refresh"/></svg></span><span class="a-ub"><svg class="i i18" aria-hidden="true"><use href="#i-sliders"/></svg></span></div>
+    </div>
+    <div class="a-seg">
+      <div><svg class="i i16" aria-hidden="true"><use href="#i-align-left"/></svg><span data-i18n="cal.day">Gün</span></div><div class="on"><svg class="i i16" aria-hidden="true"><use href="#i-calendar"/></svg><span data-i18n="cal.month">Ay</span></div><div><svg class="i i16" aria-hidden="true"><use href="#i-grid"/></svg><span data-i18n="cal.year">Yıl</span></div>
+    </div>
+    <div class="a-mh"><svg class="i i18" aria-hidden="true"><use href="#i-chevron-left"/></svg><span class="a-mt"></span><svg class="i i18" aria-hidden="true"><use href="#i-chevron-right"/></svg></div>
+    <div class="a-mgrid"></div>
+    <div class="a-list">
+      <div class="a-grp" data-i18n="cal.events">Bugünkü Etkinlikler</div>
+      <div class="a-ev" style="--c:#4f46e5">
+        <div class="a-evh"><div class="a-evt"><span class="a-evtime"><svg class="i i14" aria-hidden="true"><use href="#i-clock"/></svg>10:00 - 11:00</span><span class="a-evcat" data-i18n="cat.work">İş</span></div><div class="r"><svg class="i i17" aria-hidden="true"><use href="#i-share-2"/></svg><svg class="i i18" aria-hidden="true"><use href="#i-more"/></svg></div></div>
+        <div class="a-evtitle" data-i18n="cal.e1">Ekip toplantısı</div>
+        <div class="a-evd" data-i18n="cal.e1d">Sprint planlaması ve lansman hazırlığı</div>
+        <div class="a-evf"><span style="color:#4f46e5;display:flex"><svg class="i i16" aria-hidden="true"><use href="#i-video"/></svg></span>Google Meet</div>
+      </div>
+      <div class="a-ev" style="--c:#10b981">
+        <div class="a-evh"><div class="a-evt"><span class="a-evtime"><svg class="i i14" aria-hidden="true"><use href="#i-clock"/></svg>12:30 - 13:30</span><span class="a-evcat" data-i18n="cat.personal">Kişisel</span></div><div class="r"><svg class="i i17" aria-hidden="true"><use href="#i-share-2"/></svg><svg class="i i18" aria-hidden="true"><use href="#i-more"/></svg></div></div>
+        <div class="a-evtitle" data-i18n="cal.e2">Öğle yemeği · Deniz</div>
+        <div class="a-evf"><span style="color:#10b981;display:flex"><svg class="i i16" aria-hidden="true"><use href="#i-map-pin"/></svg></span><span data-i18n="cal.e2l">Kadıköy</span></div>
+      </div>
+    </div>
+    <div class="a-fab"><svg class="i i26" aria-hidden="true"><use href="#i-plus"/></svg></div>
+    <div data-tabs="calendar"></div>
+  </div></div>
+  <div class="view" data-screen="3"><div class="app">
+    <div class="a-dt">
+      <span class="a-db"><svg class="i i18" aria-hidden="true"><use href="#i-x"/></svg></span>
+      <div class="g"><span class="a-db"><svg class="i i18" aria-hidden="true"><use href="#i-undo"/></svg></span><span class="a-db"><svg class="i i18" aria-hidden="true"><use href="#i-redo"/></svg></span><span class="a-db p"><svg class="i i18" aria-hidden="true"><use href="#i-check"/></svg></span></div>
+    </div>
+    <div class="a-paper">
+      <svg class="a-ink" viewBox="0 0 260 360" preserveAspectRatio="xMidYMin meet" style="width:100%;height:100%">
         <path class="hl" d="M24 78 C 70 74, 130 80, 196 76"/>
         <path d="M28 70 c6-18 14-22 18-6 s4 20 10 4 s8-16 14-2 c4 10 8 8 12 -2 M96 66 c10-4 20-4 24 2 c4 6-6 10-12 6 c-6-4 0-12 10-10 c8 2 10 8 18 2 M148 60 l2 14 M144 66 l10 0 M162 68 c4-10 14-10 16 0 c2 8-8 10-12 4"/>
         <path d="M30 130 l40 0 M30 160 c20 -10 40 10 60 0 s40 -10 60 0 M40 210 c0 -30 60 -30 60 0 c0 30 -60 30 -60 0 z M120 196 l60 -22 l-8 -8 M180 174 l-10 12"/>
       </svg>
     </div>
-    <div class="tools"><span class="sel" style="background:var(--text)"></span><span style="background:var(--slate)"></span><span style="background:var(--sage)"></span><span style="background:var(--sand)"></span><span style="background:var(--clay)"></span></div>
-  </div>
+    <div class="a-tools"><div class="a-tb">
+      <span class="ib sel"><svg class="i i20" aria-hidden="true"><use href="#i-pencil"/></svg></span><span class="ib"><svg class="i i20" aria-hidden="true"><use href="#i-highlighter"/></svg></span><span class="ib"><svg class="i i20" aria-hidden="true"><use href="#i-eraser"/></svg></span>
+      <span class="sep"></span>
+      <span class="cd sel" style="background:var(--a-text)"></span><span class="cd" style="background:#2F5FA8"></span><span class="cd" style="background:#C43D33"></span>
+      <span class="sep"></span>
+      <span class="ib"><svg class="i i20" aria-hidden="true"><use href="#i-sticky-note"/></svg></span>
+    </div></div>
+  </div></div>
 </template>
 
 <script>
@@ -896,13 +1128,10 @@ footer { border-top: 1px solid var(--line); padding: 48px 0 calc(40px + env(safe
     'hero.eyebrow': 'Notes · Tasks · Calendar',
     'hero.title': 'Bring <em>order</em> to your mind.',
     'hero.lead': 'NoteMaster brings your notes, tasks and calendar together in one calm app. Speak your notes, let AI summarize them, and get reminded when it matters.',
-    'store.apple.small': 'Download on the', 'store.google.small': 'Get it on',
-    'hero.n1': 'Free to start', 'hero.n2': 'Try without an account', 'hero.n3': 'iOS and Android',
+    'store.apple.small': 'Download on the', 'store.google.small': 'Coming soon',
+    'hero.n1': 'Free to start', 'hero.n2': 'Try without an account', 'hero.n3': 'On iOS now, Android coming soon',
     'float.notifT': 'Team meeting · 15 min', 'float.notifS': "Don't forget the slides",
     'float.aiT': 'Summarized by AI', 'float.aiS': '3 decisions, 2 action items found',
-    'ph.greeting': 'Good morning, Alex', 'ph.today': 'Today is <em>calm</em>', 'ph.progress': '3 / 4 tasks done', 'ph.progressS': "You're doing great",
-    'ph.t1': 'Morning run', 'ph.t2': 'Reply to emails', 'ph.t3': 'Prepare the deck', 'ph.recent': 'Recent notes',
-    'ph.n1': 'Weekend camping plan', 'ph.n2': 'Sprint meeting',
     'story.eyebrow': 'How it works', 'story.title': 'From an idea to a <em>finished</em> task.',
     'story.lead': "You don't need four apps to capture, organize, plan and sketch.",
     's1.title': 'Capture ideas <em>the moment</em> they strike.', 's1.body': 'Type or speak. Voice notes are transcribed, and AI summarizes the long ones for you.',
@@ -940,17 +1169,35 @@ footer { border-top: 1px solid var(--line); padding: 48px 0 calc(40px + env(safe
     'faq.q3': 'Does my data sync across devices?', 'faq.a3': 'When you sign in, your notes, tasks and events stay up to date on all your devices.',
     'faq.q4': 'Does it work with Google Calendar?', 'faq.a4': 'Yes. Connect one or more Google Calendars; events sync both ways.',
     'faq.q5': 'How do I delete my account?', 'faq.a5': 'In the app, go to Settings → Profile → Delete account to permanently delete your account and all your data.',
+    'faq.q6': 'Is NoteMaster available on Android?', 'faq.a6': "The Android version is on its way and isn't on Google Play yet. For now you can download it on iOS from the App Store; we'll announce Android here when it launches.",
     'fin.eyebrow': "When you're ready", 'fin.title': 'Less clutter, more <em>focus</em>.', 'fin.lead': 'Download NoteMaster and take your first note in under a minute.',
     'ft.privacy': 'Privacy Policy', 'ft.terms': 'Terms of Service', 'ft.contact': 'Contact',
-    'sc0.k': 'New note', 'sc0.t': 'Meeting notes', 'sc0.ai': 'AI summary', 'sc0.a1': 'Launch date is Nov 12', 'sc0.a2': 'Ayşe delivers the design on Friday',
-    'sc1.t': '<em>Notes</em>', 'sc1.s': 'meeting', 'sc1.all': 'All', 'sc1.work': 'Work', 'sc1.personal': 'Personal', 'sc1.ideas': 'Ideas',
-    'sc1.today': 'Today', 'sc1.n1': 'Sprint meeting', 'sc1.n2': 'Client meeting', 'sc1.yday': 'Yesterday', 'sc1.n3': 'Meeting room ideas',
-    'sc2.t': '<em>Calendar</em>', 'sc2.e1': 'Team meeting', 'sc2.e2': 'Lunch · Deniz', 'sc2.t1': 'Send the report', 'sc2.t2': 'Prepare the deck',
-    'sc2.high': 'High', 'sc2.r': 'Reminder · 2:00 PM', 'sc2.rs': 'Prepare the deck',
-    'sc3.t': '<em>Sketch</em>',
+    'tab.tasks': 'Tasks', 'tab.notes': 'Notes', 'tab.home': 'Home', 'tab.calendar': 'Calendar', 'tab.settings': 'Settings',
+    'h.sum': "Today's Summary", 'h.advT': 'Daily Smart Advice', 'h.adv': 'You have 2 high priority tasks today. Focus on those first!',
+    'h.tasks': "Today's Tasks", 'h.rate': 'Completion Rate', 'h.rateT': '2 of 4 tasks completed',
+    'h.t1': 'Morning run', 'h.t2': 'Reply to emails', 'h.t3': 'Prepare the deck',
+    'h.qa': 'Quick Actions', 'h.all': 'See All', 'h.q1': 'Voice Note & AI', 'h.q1d': 'Record quick voice notes',
+    'h.q2': 'New Task', 'h.q2d': 'Add a new todo item', 'h.q3': 'AI Assistant', 'h.new': 'New', 'h.q3d': 'Ask & give commands',
+    'h.q4': 'All Notes', 'h.q4c': '12 Notes', 'h.q4d': 'Browse all your notes',
+    'ed.new': 'New Note', 'ed.save': 'Save', 'ed.sTitle': 'NOTE TITLE', 'ed.title': 'Meeting notes', 'ed.sColor': 'NOTE COLOR', 'ed.sContent': 'NOTE CONTENT',
+    'ed.l1': 'Launch date is Nov 12', 'ed.l2': 'Ayşe delivers the design on Friday', 'ed.l3': 'Test environment ready on Wednesday', 'ed.l4': 'Share the slides on Thursday',
+    'ed.ai': 'AI Smart Note Assistant', 'ed.grammar': 'Spelling & Grammar', 'ed.sum': 'Summarize', 'ed.more': 'More AI Tools',
+    'nt.search': 'Search Notes', 'nt.all': 'All', 'nt.work': 'Work', 'nt.personal': 'Personal', 'nt.ideas': 'Ideas', 'nt.today': 'Today', 'nt.yday': 'Yesterday',
+    'nt.n1': 'Sprint meeting', 'nt.p1': 'Launch date is Nov 12. Ayşe delivers the design on Friday. The test environment will be ready Wednesday; share the bug list before the meeting.',
+    'nt.n2': 'Weekend camping plan', 'nt.p2': "Leave Friday evening. Tent, sleeping bag, stove and spare battery. Saturday morning hike on the lake's north trail.",
+    'nt.n3': 'Meeting room ideas', 'nt.p3': 'Whiteboard wall, wireless presenting for the shared screen, a quiet work corner.', 'nt.sync': 'Synced',
+    'cal.google': 'Google Cal', 'cal.day': 'Day', 'cal.month': 'Month', 'cal.year': 'Year', 'cal.events': "Today's Events",
+    'cal.e1': 'Team meeting', 'cal.e1d': 'Sprint planning and launch prep', 'cal.e2': 'Lunch · Deniz', 'cal.e2l': 'Kadıköy', 'cat.work': 'Work', 'cat.personal': 'Personal',
   };
   const TR_AI = 'Tabii. <b>09:30</b> sunuma odaklanma, <b>12:00</b> Deniz ile öğle yemeği, <b>15:00</b> sprint notlarının gözden geçirilmesi.';
-  const DAYS = { tr: ['Pt', 'Sa', 'Ça', 'Pe', 'Cu', 'Ct', 'Pz'], en: ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'] };
+  const TABS = [['tasks', 'check-square', 'Görevler'], ['notes', 'file-text', 'Notlar'], ['home', 'home', 'Ana Sayfa'], ['calendar', 'calendar', 'Takvim'], ['settings', 'settings', 'Ayarlar']];
+  const icon = (n, c) => '<svg class="i ' + c + '" aria-hidden="true"><use href="#i-' + n + '"/></svg>';
+  const hdrHTML = k => '<div class="a-hdr"><div class="a-logo"><img src="assets/icon-128.png" alt="" width="36" height="36"><div><div class="a-brand">NoteMaster</div><div class="a-sub" data-i18n="tab.' + k + '">' + TABS.find(t => t[0] === k)[2] + '</div></div></div><div class="a-acts"><span class="a-rb">' + icon('search', 'i17') + '</span><span class="a-rb ai">' + icon('sparkles', 'i15') + '</span><span class="a-rb">' + icon('user', 'i18') + '</span></div></div>';
+  const tabsHTML = a => '<div class="a-tabs"><div class="a-bar">' + TABS.map(([k, i, tr]) => '<div class="a-tab' + (k === a ? ' on' : '') + '"><div class="tc">' + icon(i, 'i24') + '<span data-i18n="tab.' + k + '">' + tr + '</span></div>' + (k === a ? '<div class="a-bub">' + icon(i, 'i26') + '</div>' : '') + '</div>').join('') + '</div></div>';
+  const fillShells = root => {
+    root.querySelectorAll('[data-hdr]').forEach(el => el.replaceWith(Object.assign(document.createElement('div'), { innerHTML: hdrHTML(el.dataset.hdr) }).firstChild));
+    root.querySelectorAll('[data-tabs]').forEach(el => el.replaceWith(Object.assign(document.createElement('div'), { innerHTML: tabsHTML(el.dataset.tabs) }).firstChild));
+  };
 
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const $ = (s, el = document) => el.querySelector(s);
@@ -958,6 +1205,8 @@ footer { border-top: 1px solid var(--line); padding: 48px 0 calc(40px + env(safe
 
   // Story screens: one copy in the sticky phone, one inline per step (mobile).
   const tpl = $('#screens');
+  fillShells(document);
+  fillShells(tpl.content);
   $('#storyScreen').innerHTML = '<div class="sb"><span>9:41</span><span>●●●</span></div>' + tpl.innerHTML;
   $$('.step').forEach((step, i) => {
     const holder = $('.step-phone', step);
@@ -974,14 +1223,35 @@ footer { border-top: 1px solid var(--line); padding: 48px 0 calc(40px + env(safe
   $$('[data-i18n-html]').forEach(el => { TR[el.dataset.i18nHtml] = el.innerHTML; });
 
   let lang = 'tr';
-  const week = () => {
+  // Day dots on the sample days (relative to today): event colours, grey = task.
+  const EVDOTS = { '-2': ['#10b981'], '-1': ['#10b981'], 0: ['#4f46e5', '#10b981'], 1: ['#f59e0b'], 2: ['#4f46e5', 'g'], 3: ['#4f46e5'], 5: ['#10b981', '#4f46e5'], 7: ['#f59e0b'], 9: ['#4f46e5'], 12: ['#10b981', 'g'] };
+  const dotsHTML = (key, sel) => (EVDOTS[key] || []).map(c => '<i style="background:' + (sel ? 'var(--a-onp);opacity:.8' : c === 'g' ? 'var(--a-t2)' : c) + '"></i>').join('');
+  const loc = () => (lang === 'en' ? 'en-US' : 'tr-TR');
+  const dayStrip = () => {
     const today = new Date();
-    const monday = new Date(today); monday.setDate(today.getDate() - ((today.getDay() + 6) % 7));
-    return DAYS[lang].map((d, i) => {
-      const date = new Date(monday); date.setDate(monday.getDate() + i);
-      const isToday = date.toDateString() === today.toDateString();
-      return `<div class="${isToday ? 'today' : ''}">${d}<b>${date.getDate()}</b></div>`;
+    return [-1, 0, 1, 2, 3, 4, 5].map(o => {
+      const d = new Date(today); d.setDate(today.getDate() + o);
+      return '<div class="a-day' + (o === 0 ? ' sel' : '') + '"><small>' + d.toLocaleDateString(loc(), { weekday: 'short' }) + '</small><b>' + d.getDate() + '</b><div class="a-dots">' + dotsHTML(o, o === 0) + '</div></div>';
     }).join('');
+  };
+  const monthGrid = () => {
+    const now = new Date(), y = now.getFullYear(), m = now.getMonth();
+    const lead = (new Date(y, m, 1).getDay() + 6) % 7, days = new Date(y, m + 1, 0).getDate();
+    let html = '';
+    for (let i = 0; i < 7; i++) html += '<div class="a-wd">' + new Date(2024, 0, 1 + i).toLocaleDateString(loc(), { weekday: 'short' }) + '</div>';
+    for (let i = 0; i < lead; i++) html += '<div class="a-d"></div>';
+    for (let d = 1; d <= days; d++) {
+      const o = d - now.getDate();
+      html += '<div class="a-d' + (o === 0 ? ' td sel' : '') + '"><span>' + d + '</span><div class="a-dots">' + dotsHTML(o, false) + '</div></div>';
+    }
+    return html;
+  };
+  const dynamic = () => {
+    $$('.a-hcal').forEach(el => { el.innerHTML = dayStrip(); });
+    $$('.a-mgrid').forEach(el => { el.innerHTML = monthGrid(); });
+    const now = new Date();
+    $$('.a-mt').forEach(el => { el.textContent = now.toLocaleDateString(loc(), { month: 'long', year: 'numeric' }); });
+    $$('[data-today]').forEach(el => { el.textContent = now.toLocaleDateString(loc(), { day: 'numeric', month: 'short', year: 'numeric' }); });
   };
 
   function setLang(next) {
@@ -991,7 +1261,7 @@ footer { border-top: 1px solid var(--line); padding: 48px 0 calc(40px + env(safe
     $$('[data-i18n]').forEach(el => { const v = dict[el.dataset.i18n]; if (v != null) el.textContent = v; });
     $$('[data-i18n-html]').forEach(el => { const v = dict[el.dataset.i18nHtml]; if (v != null) el.innerHTML = v; });
     $$('.split').forEach(splitWords);
-    $$('.week').forEach(w => { w.innerHTML = week(); });
+    dynamic();
     $('#lang').textContent = next === 'en' ? 'TR' : 'EN';
     buildStrip();
     try { localStorage.setItem('nm-lang', next); } catch (e) {}

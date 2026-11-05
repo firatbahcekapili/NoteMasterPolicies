@@ -118,6 +118,8 @@
     .btn-primary { background: var(--primary); color: var(--primary-text); }
     .btn-outline { background: transparent; color: var(--text); border: 1px solid var(--line-strong); }
     .btn-outline:hover { border-color: var(--text-faint); }
+    .btn-soon, .btn-soon:hover { border-style: dashed; border-color: var(--line-strong); color: var(--text-soft); cursor: default; }
+    .btn-soon:active { transform: none; }
     #stores { display: flex; flex-direction: column; gap: 10px; }
     .store-grid { display: grid !important; grid-template-columns: 1fr 1fr; gap: 10px; }
     .center { text-align: center; }
@@ -188,8 +190,8 @@
     (function () {
       // Public project URL; the data comes from the `share` edge function.
       var SHARE_ENDPOINT = 'https://mwqlisyiczrqhuiacdfj.supabase.co/functions/v1/share';
-      var DEFAULT_PLAY = 'https://play.google.com/store/apps/details?id=com.fcodetr.notemaster';
-      var DEFAULT_APPLE = '';
+      // /app-store sends Turkish visitors to the TR storefront and the rest to the US one.
+      var APPLE_URL = '/app-store';
 
       var ua = navigator.userAgent || '';
       var isIos = /iPhone|iPad|iPod/i.test(ua) || (/Macintosh/.test(ua) && 'ontouchend' in document);
@@ -198,13 +200,13 @@
 
       var TEXT = isEn ? {
         note: 'Note', task: 'Task', event: 'Event',
-        openApp: 'Open in App', play: 'Get it on Google Play', apple: 'Download on the App Store',
+        openApp: 'Open in App', soon: 'Google Play · Coming soon', apple: 'Download on the App Store',
         invalidTitle: 'Link Unavailable', invalidMsg: 'This shared link was removed or has expired.',
         missingMsg: 'The share link is incomplete.', networkMsg: 'Could not load the shared item. Please try again.',
         untitled: 'Untitled', footer: 'Shared with NoteMaster'
       } : {
         note: 'Not', task: 'Görev', event: 'Etkinlik',
-        openApp: 'Uygulamada Aç', play: "Google Play'den İndir", apple: "App Store'dan İndir",
+        openApp: 'Uygulamada Aç', soon: 'Google Play · Yakında', apple: "App Store'dan İndir",
         invalidTitle: 'Bağlantı Geçersiz', invalidMsg: 'Bu paylaşım bağlantısı kaldırılmış veya süresi dolmuş.',
         missingMsg: 'Paylaşım bağlantısı eksik.', networkMsg: 'Paylaşılan içerik yüklenemedi. Lütfen tekrar deneyin.',
         untitled: 'Başlıksız', footer: 'NoteMaster ile paylaşıldı'
@@ -228,25 +230,27 @@
         return d.toLocaleString(isEn ? 'en-US' : 'tr-TR', opts);
       };
 
-      var renderStores = function (playUrl, appleUrl) {
+      var renderStores = function () {
         var box = $('stores');
         box.textContent = '';
-        var make = function (href, label) {
+        var links = [];
+        if (!isAndroid) {
           var a = document.createElement('a');
           a.className = 'btn btn-outline';
-          a.href = href; a.target = '_blank'; a.rel = 'noopener';
-          a.textContent = label;
-          return a;
-        };
-        var links = [];
-        if (isIos) { if (appleUrl) links.push(make(appleUrl, TEXT.apple)); }
-        else if (isAndroid) { if (playUrl) links.push(make(playUrl, TEXT.play)); }
-        else {
-          if (playUrl) links.push(make(playUrl, TEXT.play));
-          if (appleUrl) links.push(make(appleUrl, TEXT.apple));
+          a.href = APPLE_URL; a.target = '_blank'; a.rel = 'noopener';
+          a.textContent = TEXT.apple;
+          links.push(a);
+        }
+        // Android is not published yet: a disabled label, never a link.
+        if (!isIos) {
+          var soon = document.createElement('span');
+          soon.className = 'btn btn-outline btn-soon';
+          soon.setAttribute('aria-disabled', 'true');
+          soon.textContent = TEXT.soon;
+          links.push(soon);
         }
         if (links.length > 1) box.className = 'store-grid';
-        links.forEach(function (a) { box.appendChild(a); });
+        links.forEach(function (n) { box.appendChild(n); });
       };
 
       var showError = function (message) {
@@ -255,7 +259,7 @@
         $('error-message').textContent = message || TEXT.invalidMsg;
         $('stripe').style.background = 'var(--danger)';
         show('error');
-        renderStores(DEFAULT_PLAY, DEFAULT_APPLE);
+        renderStores();
       };
 
       var token = new URLSearchParams(window.location.search).get('t');
@@ -309,7 +313,7 @@
             // Try to open the app; if it is not installed the page stays.
             setTimeout(function () { window.location.href = deepLink; }, 300);
           }
-          renderStores(res.playStoreUrl || DEFAULT_PLAY, res.appStoreUrl || DEFAULT_APPLE);
+          renderStores();
         })
         .catch(function () { showError(TEXT.networkMsg); });
     })();
